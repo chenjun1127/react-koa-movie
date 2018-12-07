@@ -1,0 +1,133 @@
+$yellow: #ff7812;
+$fontColor: #333;
+$blurColor: #40a9ff;
+.menu {
+    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1), 0 1px rgba(0, 0, 0, 0.1);
+    background: #fafafa;
+    border-top: 2px solid $blurColor;
+    .menuBox {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        width: 1200px;
+        margin: 0 auto;
+        .userBox a, .userBox button {
+            margin-right: 10px;
+        }
+        .menuList {
+            display: flex;
+            align-items: center;
+            font-size: 16px;
+            margin: 0;
+            li {
+                padding: 20px 0;
+                margin-right: 20px;
+                text-align: center;
+                box-shadow: inset 0 -1px 0px #e6e6e6;
+                a {
+                    color: #333;
+                }
+                &.active {
+                    box-shadow: inset 0 -1px 0px $blurColor;
+                    a {
+                        color: $blurColor;
+                        text-decoration: none;
+                    }
+                }
+            }
+        }
+    }
+}
+
+.captcha {
+    margin-top: 4px;
+    height: 32px;
+}
+
+.userCenter {
+    display: flex;
+    align-items: center;
+    em {
+        color: $blurColor;
+    }
+}
+
+.userImg {
+    img {
+        width: 36px;
+        height: 36px;
+        border-radius: 50%;
+        margin-left: 10px;
+        cursor: pointer;
+    }
+}
+
+.inner {
+    background: #f5f5f5;
+    width: 100vm;
+    height: 100vh;
+}
+
+.card {
+    width: 100%;
+    margin: 0 auto;
+    background: #fff;
+    box-shadow: 0 0 5px #d9d9d9;
+    position: absolute;
+    left: 50%;
+    top: 17%;
+    transform: translate(-50%, 0);
+    @media only screen and (min-width: 1000px) {
+        width: 600px;
+        top: 18%
+    }
+    .card-title {
+        font-size: 16px;
+        background: #f5f5f5;
+        padding: 12px 20px;
+        border-bottom: 1px solid #d9d9d9;
+    }
+    .card-content {
+        padding: 20px;
+    }
+}
+
+.logo_box {
+    position: absolute;
+    left: 0;
+    top: -100px;
+    text-align: center;
+    width: 100%;
+    h1 {
+        color: #888;
+    }
+}
+
+.forgotTips {
+    em {
+        color: $blurColor
+    }
+}
+
+.forgot-button {
+    margin-bottom: 20px;
+}
+
+.red {
+    color: red;
+}
+
+.emailTips {
+    padding-top: 20px;
+    p {
+        word-break: break-all
+    }
+}
+
+.emailTipsAccount {
+    text-align: center;
+}
+
+.blueColor {
+    color: $blurColor;
+}
