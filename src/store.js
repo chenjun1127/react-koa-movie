@@ -1,19 +1,13 @@
-import {observable, computed, action} from 'mobx';
+import {observable, action} from 'mobx';
 
 
 class UserInfo {
     @observable info = {};
-    @observable signUp = {userName: '', email: '', isActive: false};
     @observable time = new Date().toLocaleTimeString();
     @action
     setInfo = (obj) => {
         this.info = obj;
     }
-    @action
-    setSignUp = (obj) => {
-        this.signUp = obj;
-    }
-
 }
 
 class Operate {

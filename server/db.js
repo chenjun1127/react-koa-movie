@@ -25,6 +25,10 @@ const query = (sql, values) => {
         })
     })
 }
+/*
+    active 0==>未激活，1==>激活
+    sex 1==>男，2==>女,3==>保密
+ */
 const users =
     `create table if not exists users(
      id INT(11) NOT NULL AUTO_INCREMENT,
@@ -34,8 +38,10 @@ const users =
      avatar VARCHAR(100) DEFAULT NULL,
      create_time VARCHAR(100) NOT NULL,
      active TINYINT DEFAULT 0,
-     phone INT(11) DEFAULT 0,
+     phone INT(11) DEFAULT NULL,
      role INT(11) DEFAULT 0,
+     userSign VARCHAR(100) DEFAULT NULL,
+     sex TINYINT DEFAULT 1,     
      PRIMARY KEY ( id )
     );`
 

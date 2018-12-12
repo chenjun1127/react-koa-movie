@@ -7,19 +7,25 @@ const sql = require('../sql');
 const dayjs = require('dayjs');
 const {validate, enbcrypt} = require('../utils/bcrypt');
 const sendMail = require('../utils/sendMail');
+const sessionConfig = require('../session.config');
 // 获取session状态
 router.get('/session', async (ctx) => {
-    if (ctx.session.user) {
-        ctx.body = {
-            code: 200,
-            data: ctx.session.user
+    await sql.findUserData().then((res) => {
+        if (res.length && ctx.session.user) {
+            ctx.body = {
+                code: 200,
+                data: ctx.session.user,
+                expiresDays: ctx.session.expiresDays
+            }
+        } else {
+            ctx.session = null;
+            ctx.body = {
+                code: 502,
+                desc: '暂无登录状态'
+            }
         }
-    } else {
-        ctx.body = {
-            code: 502,
-            desc: '暂无登录状态'
-        }
-    }
+    })
+
 });
 // 注册
 router.post('/user/signUp', async (ctx) => {
@@ -62,10 +68,12 @@ router.post('/user/signIn', async (ctx) => {
             await validate(password, res[0].password).then(boolean => {
                 if (boolean) {
                     ctx.session.user = remember ? res[0] : '';
+                    ctx.session.expiresDays = sessionConfig.maxAge / 1000 / 3600 / 24; // 过期的天数
                     ctx.body = {
                         code: 200,
                         desc: '登录成功',
-                        data: res[0]
+                        data: res[0],
+                        expiresDays: sessionConfig.maxAge / 1000 / 3600 / 24
                     }
                 } else {
                     ctx.body = {
@@ -231,6 +239,7 @@ router.post('/user/activeAccount', async (ctx) => {
 // 登出
 router.get('/user/signOut', async (ctx) => {
     ctx.session.user = '';
+    // console.log(ctx.session)
     ctx.body = {
         code: 200,
         desc: '注销成功'

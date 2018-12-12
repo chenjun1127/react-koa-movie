@@ -34,7 +34,15 @@ class NormalLoginForm extends React.Component {
                 }).then(res => {
                     if (res.data.code === 200) {
                         message.success(res.data.desc, 1, () => {
-                            this.props.userInfo.setSignUp({userName: values.userName, email: values.email, isActive: false});
+                            this.props.userInfo.setInfo({
+                                isLogin: false,
+                                userId:'',
+                                userName: values.userName,
+                                email: values.email,
+                                userImg: '',
+                                isActive: false
+                            });
+                            this.props.operate.setVisible(false);
                             this.props.history.push('/user/active');
                         })
                     } else {
@@ -77,7 +85,6 @@ class NormalLoginForm extends React.Component {
     }
 
     componentDidMount() {
-        console.log(this)
         this.changeCaptcha();
         this.props.operate.setForm(this.props.form);
     }

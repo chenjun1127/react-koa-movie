@@ -1,12 +1,12 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
-import {Button} from 'antd';
 import SignInAndSignUp from '../user/SignInAndSignUp';
 import {inject, observer} from 'mobx-react';
 import axios from "axios";
-import {Menu, Dropdown} from 'antd';
+import {Button, Menu, Dropdown} from 'antd';
+import {cookie} from '../../utils/cookie';
 
-@inject(['operate'],['userInfo'])
+@inject(['operate'], ['userInfo'])
 @observer
 export default class Nav extends Component {
     static defaultProps = {
@@ -44,14 +44,18 @@ export default class Nav extends Component {
     }
 
     componentDidMount() {
-        console.log(1,this)
         axios.get(`/api/session?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
-                this.props.userInfo.setInfo({
+                let resData = res.data.data;
+                delete resData.password;
+                this.props.userInfo.setInfo(Object.assign({}, resData, {
                     isLogin: true,
-                    userName: res.data.data.name,
-                    userImg: res.data.data.avator
-                })
+                    isActive: resData.active === 1 ? true : false
+                }));
+                cookie.set('isLogin', true, res.data.expiresDays);
+            } else {
+                this.props.userInfo.setInfo({});
+                cookie.delete('isLogin');
             }
         }).catch(err => {
             console.log(err);
@@ -61,20 +65,26 @@ export default class Nav extends Component {
     handleClickSignOut() {
         axios.get(`/api/user/signOut?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
-                this.props.userInfo.setInfo({
-                    isLogin: false,
-                    userName: '',
-                    userImg: ''
-                })
+                this.props.userInfo.setInfo({});
+                cookie.delete('isLogin');
+                this.props.history.replace("/");
             }
         }).catch(err => {
             console.log(err);
         })
     }
 
+    handleClickCenter(id) {
+        this.props.history.replace(`/user/center/${id}`);
+    }
+
+    handleClickInfo() {
+        this.props.history.replace(`/user/info`);
+    }
+
 
     render() {
-        const {isLogin,userImg,userName}=this.props.userInfo.info;
+        const {isLogin, id, avatar, name} = this.props.userInfo.info;
         const {visible} = this.props.operate;
         const tabList = this.props.tabs.map((item, index) => {
             return (
@@ -83,24 +93,22 @@ export default class Nav extends Component {
                 </li>
             )
         });
-        let avatar;
-        if (userImg) {
-            avatar = require(`../../static/upload/${userImg}`);
+        let headPic;
+        if (avatar) {
+            headPic = require(`../../static/upload/${avatar}`);
         } else {
-            avatar = require('../../static/images/default-head.png');
+            headPic = require('../../static/images/default-head.png');
         }
+
         const menu = (
             <Menu>
-                <Menu.Item key="0">
-                    <a href="http://www.alipay.com/">个人中心</a>
-                </Menu.Item>
-                <Menu.Item key="1">
-                    <a href="http://www.taobao.com/">我的主页</a>
-                </Menu.Item>
+                <Menu.Item key="0" onClick={this.handleClickCenter.bind(this, id)}>我的主页 </Menu.Item>
+                <Menu.Item key="1" onClick={this.handleClickInfo.bind(this)}>个人资料 </Menu.Item>
                 <Menu.Divider/>
                 <Menu.Item key="3" onClick={this.handleClickSignOut.bind(this)}>注销</Menu.Item>
             </Menu>
         );
+
 
         return (
             <div className="menu">
@@ -113,10 +121,10 @@ export default class Nav extends Component {
                                 <Button onClick={this.sign.bind(this, 2)}>免费注册</Button>
                             </div> :
                             <div className="userCenter">
-                                <span>欢迎您，</span><em>{userName}</em>
+                                <span>欢迎您，</span><em>{name}</em>
                                 <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
                                     <div className="userImg">
-                                        <img src={avatar}/>
+                                        <img src={headPic}/>
                                     </div>
                                 </Dropdown>
                             </div>

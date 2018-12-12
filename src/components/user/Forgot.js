@@ -3,8 +3,10 @@
  */
 import React from 'react';
 import {Button, Form, Row, Col, Input, message} from 'antd';
+
 import axios from "axios/index";
 import goToEmail from '../../utils/email';
+import LogoTips from '../common/LogoTips';
 
 const FormItem = Form.Item;
 
@@ -28,10 +30,9 @@ class NormalLoginForm extends React.Component {
                     email: values.email,
                     captcha: values.captcha,
                     time: Date.now(),
-                    url:location.href.replace('forgot', 'reset')
+                    url: location.href.replace('forgot', 'reset')
                 }).then(res => {
                     if (res.data.code === 200) {
-                        console.log(res, this)
                         this.setState({
                             sendSuccessTime: Date.now(),
                             flag: false,
@@ -49,7 +50,6 @@ class NormalLoginForm extends React.Component {
     }
 
     componentDidMount() {
-        console.log(location)
         this.state.flag && this.changeCaptcha();
     }
 
@@ -86,12 +86,9 @@ class NormalLoginForm extends React.Component {
             },
         };
         return (
-            <div className="inner">
+            <div className="bgGray">
                 <div className="card">
-                    <div className="logo_box">
-                        <img src={require('../../static/images/logo.png')} className="logo"/>
-                        <h1>欢迎来到电影网</h1>
-                    </div>
+                    <LogoTips/>
                     <h1 className="card-title">重置密码</h1>
                     <div className="card-content">
                         {

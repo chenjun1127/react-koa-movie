@@ -3,11 +3,10 @@
  */
 
 import React from 'react';
-import {Button, Form, Icon, Input, Checkbox} from 'antd';
-
+import {Button, Form, Icon, Input, Checkbox,message} from 'antd';
+import {cookie} from '../../utils/cookie';
 const FormItem = Form.Item;
 import {inject, observer} from 'mobx-react';
-import {message} from "antd/lib/index";
 import axios from "axios/index";
 
 export default class SignIn extends React.Component {
@@ -33,17 +32,19 @@ class NormalLoginForm extends React.Component {
                 }).then(res => {
                     if (res.data.code === 200) {
                         message.success(res.data.desc, 1, () => {
-                            this.props.userInfo.setInfo({
+                            let resData = res.data.data;
+                            delete resData.password;
+                            this.props.userInfo.setInfo(Object.assign({}, resData, {
                                 isLogin: true,
-                                userName: res.data.data.name,
-                                userImg: res.data.data.avator,
-                            })
-                            if (res.data.data.active === 1) {
-                                this.props.operate.setVisible(false);
-                            } else {
-                                this.props.userInfo.setSignUp({userName: res.data.data.name, email: res.data.data.email, isActive: false});
+                                isActive: resData.active === 1 ? true : false
+                            }));
+                            this.props.operate.setVisible(false);
+                            if (res.data.data.active === 0) {
                                 this.props.history.push('/user/active');
+                            } else {
+                                this.props.history.replace('/');
                             }
+                            cookie.set('isLogin', true, res.data.expiresDays);
                         })
                     } else {
                         message.error(res.data.desc, 1)
@@ -53,7 +54,7 @@ class NormalLoginForm extends React.Component {
                 })
             }
         });
-    }
+    };
 
     componentDidMount() {
         this.props.operate.setForm(this.props.form);
@@ -67,10 +68,8 @@ class NormalLoginForm extends React.Component {
     }
 
     handleForgot() {
-        console.log(this)
         this.props.operate.setVisible(false);
         this.props.history.push('/user/forgot');
-
     }
 
     render() {
@@ -81,14 +80,14 @@ class NormalLoginForm extends React.Component {
                     {getFieldDecorator('userName', {
                         rules: [{required: true, message: '用户名为4-16位字符', pattern: /^[\u4e00-\u9fa5\w]{2,16}$/}],
                     })(
-                        <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="Username"/>
+                        <Input prefix={<Icon type="user" style={{color: 'rgba(0,0,0,.25)'}}/>} placeholder="4-16位用户名"/>
                     )}
                 </FormItem>
                 <FormItem>
                     {getFieldDecorator('password', {
                         rules: [{required: true, message: '密码为6-12位字符（字母、数字、下划线）', pattern: /^[a-zA-Z\d_]{6,12}$/}],
                     })(
-                        <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password" placeholder="Password"/>
+                        <Input prefix={<Icon type="lock" style={{color: 'rgba(0,0,0,.25)'}}/>} type="password" placeholder="6-12位密码"/>
                     )}
                 </FormItem>
                 <FormItem>

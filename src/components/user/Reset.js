@@ -4,7 +4,7 @@
 import React from 'react';
 import {Button, Form, Input, message} from 'antd';
 import axios from "axios/index";
-
+import LogoTips from '../common/LogoTips';
 const FormItem = Form.Item;
 
 export default class Forgot extends React.Component {
@@ -27,7 +27,6 @@ class NormalLoginForm extends React.Component {
                     newPassword: values.password,
                 }).then(res => {
                     if (res.data.code === 200) {
-                        console.log(res, this)
                         message.success(res.data.desc, 1, () => {
                             location.href = "/";
                         })
@@ -94,12 +93,9 @@ class NormalLoginForm extends React.Component {
             },
         };
         return (
-            <div className="inner">
+            <div className="bgGray">
                 <div className="card">
-                    <div className="logo_box">
-                        <img src={require('../../static/images/logo.png')} className="logo"/>
-                        <h1>欢迎来到电影网</h1>
-                    </div>
+                    <LogoTips/>
                     <h1 className="card-title">重置密码</h1>
                     <div className="card-content">
                         {

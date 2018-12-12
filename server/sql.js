@@ -3,6 +3,10 @@
  */
 const query = require('./db');
 
+const findUserData = () => {
+    let _sql = `select * from users`
+    return query(_sql)
+}
 // 注册用户
 const insertUser = value => {
     let _sql = "insert into users(name,password,email,create_time) values(?,?,?,?);";
@@ -20,12 +24,11 @@ const updateUserPassword = value => {
 }
 const updateUserActive = (value) => {
     let _sql = `update users set active=? where name=?`
-    return query(_sql,value)
+    return query(_sql, value)
 }
-
 // 更新用户信息
 const updateUser = value => {
-    let _sql = "update users set email=?,avatar=?,phone=?,role=? where name=?;"
+    let _sql = "update users set email=?,avatar=?,phone=?,role=?,userSign=?,sex=? where name=?;"
     return query(_sql, value)
 }
 // 查找用户
@@ -36,6 +39,7 @@ const findUser = name => {
 
 
 module.exports = {
+    findUserData,
     insertUser,
     deleteUser,
     updateUserActive,
