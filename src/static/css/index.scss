@@ -276,3 +276,13 @@ $contentWidth: 1200px;
         padding: 12px 0
     }
 }
+#uploadPic {
+    position: absolute;
+    left: 0;
+    top: 0;
+    z-index: 1;
+    width: 100%;
+    opacity: 0;
+    cursor: pointer;
+    height: 100%
+}

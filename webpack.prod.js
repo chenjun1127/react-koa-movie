@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCssAssetsPlugin = require('optimize-css-assets-webpack-plugin');
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 module.exports = {
     module: {
         rules: [{
@@ -30,7 +31,8 @@ module.exports = {
             use: [{
                 loader: 'url-loader',
                 options: {
-                    limit: 8192 // 小于8KB 使用base64格式图片
+                    limit: 8192, // 小于8KB 使用base64格式图片
+                    name: 'images/[hash:8].[name].[ext]'
                 }
             }]
         }]
@@ -39,6 +41,7 @@ module.exports = {
         extensions: [".js", ".json", ".jsx", ".css", ".scss"],
     },
     plugins: [
+        new CleanWebpackPlugin(path.resolve(__dirname, 'dist')),
         new MiniCssExtractPlugin({
             filename: 'css/[name].[chunkhash].css'
         }),

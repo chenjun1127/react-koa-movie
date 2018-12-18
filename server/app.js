@@ -7,9 +7,8 @@ const MysqlStore = require('koa-mysql-session');
 const koaBody = require('koa-body');
 const app = new Koa();
 const port = 5000;
+
 app.use(koaBody());
-
-
 // session存储配置
 const sessionMysqlConfig = {
     user: config.database.USERNAME,
@@ -19,7 +18,7 @@ const sessionMysqlConfig = {
 }
 
 const THIRTY_MINTUES = 30 * 60 * 1000;
-app.keys = ['USER_SID','some secret hurr'];
+app.keys = ['USER_SID', 'some secret hurr'];
 app.use(koaSession({
     store: new MysqlStore(sessionMysqlConfig),
     rolling: true,

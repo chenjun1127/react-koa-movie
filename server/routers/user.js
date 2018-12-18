@@ -1,13 +1,28 @@
 /**
  * Created by ChenJun on 2018/12/4
  */
-
 const router = require('koa-router')();
 const sql = require('../sql');
 const dayjs = require('dayjs');
 const {validate, enbcrypt} = require('../utils/bcrypt');
 const sendMail = require('../utils/sendMail');
-const sessionConfig = require('../session.config');
+const sessionConfig = require('../session.config')
+const multer = require('koa-multer'); //加载koa-multer模块
+//文件上传
+//配置
+const storage = multer.diskStorage({
+    //文件保存路径
+    destination: function (req, file, cb) {
+        cb(null, './src/static/uploads/')
+    },
+    //修改文件名称
+    filename: function (req, file, cb) {
+        var fileFormat = (file.originalname).split(".");
+        cb(null, Date.now() + "." + fileFormat[fileFormat.length - 1]);
+    }
+})
+//加载配置
+const upload = multer({storage: storage});
 // 获取session状态
 router.get('/session', async (ctx) => {
     await sql.findUserData().then((res) => {
@@ -110,7 +125,7 @@ router.post('/user/getBackPassword', async (ctx) => {
                             ctx.session.user = '';
                             ctx.session.sendTime = time;
                             ctx.session.userName = res[0].name;
-                            ctx.session.sendEmailTime = Date.now();// 邮件发送的时间，用户点邮件链接的时候，判断当前链接有没有过期
+                            ctx.session.sendEmailTime = Date.now(); // 邮件发送的时间，用户点邮件链接的时候，判断当前链接有没有过期
                             ctx.body = {code: 200, desc: '发送邮件成功，请重新输入新密码', data: sendRes}
                         }).catch(err => {
                             ctx.body = {code: 504, desc: '发送邮件失败，请联系管理员', msg: err.message}
@@ -188,7 +203,7 @@ router.post('/user/activeEmail', async (ctx) => {
     const {name, email, url} = ctx.request.body;
     const href = url + '?name=' + encodeURIComponent(name) + '&type=activeAccount&t=' + Date.now();
     await sendMail(email, '账号激活', `<h3>${name}您好，</h3><p>请在 24 小时内点击此链接以完成激活（如链接无法点击，请复制链接浏览器打开）</p><p>${href}</p>`).then(sendRes => {
-        ctx.session.sendActiveEmailTime = Date.now();// 邮件发送的时间，用户点邮件链接的时候，判断当前链接有没有过期
+        ctx.session.sendActiveEmailTime = Date.now(); // 邮件发送的时间，用户点邮件链接的时候，判断当前链接有没有过期
         ctx.session.actvieUserName = name;
         ctx.body = {code: 200, desc: '发送邮件成功，请点击链接激活账号', data: sendRes}
     }).catch(err => {
@@ -245,6 +260,53 @@ router.get('/user/signOut', async (ctx) => {
         desc: '注销成功'
     }
 })
-
-
+// 更新个人信息
+router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
+    let {name, email, userSign, sex, phone, avatar} = ctx.req.body;
+    // console.log(ctx.req.file, avatar);
+    let _avatar;
+    if (avatar) {
+        _avatar = avatar;
+    }
+    if (ctx.req.file) {
+        _avatar = ctx.req.file.filename;
+    }
+    if (!ctx.req.file && !avatar) {
+        _avatar = null;
+    }
+    const sign = userSign && userSign !== "undefined" ? userSign : null;
+    await sql.updateUser([email, _avatar, phone, sign, sex, name]).then(async (res) => {
+        // 更新之后，更新session
+        await sql.findUser(name).then(res => {
+            ctx.session.user = res[0]
+            ctx.body = {
+                code: 200,
+                desc: '保存成功',
+            }
+        })
+    }).catch(err => {
+        // console.log(err)
+        ctx.body = {
+            code: 504,
+            desc: '保存失败',
+            message: err.message
+        }
+    })
+})
+// 根据ID查找用户最新信息
+router.get('/user/getInfo', async (ctx) => {
+    await sql.findUserById(ctx.request.query.id).then(async res => {
+        ctx.session.user = res[0];
+        ctx.body = {
+            code: 200,
+            data: res[0]
+        }
+    }).catch(err => {
+        ctx.body = {
+            code: 504,
+            desc: '账号激活失败，请联系管理员',
+            message: err.message
+        }
+    })
+})
 module.exports = router;

@@ -28,12 +28,17 @@ const updateUserActive = (value) => {
 }
 // 更新用户信息
 const updateUser = value => {
-    let _sql = "update users set email=?,avatar=?,phone=?,role=?,userSign=?,sex=? where name=?;"
+    let _sql = "update users set email=?,avatar=?,phone=?,userSign=?,sex=? where name=?;"
     return query(_sql, value)
 }
 // 查找用户
 const findUser = name => {
     let _sql = `select * from users where name="${name}";`
+    return query(_sql)
+}
+// 查找用户根据ID
+const findUserById = id => {
+    let _sql = `select * from users where id="${id}";`
     return query(_sql)
 }
 
@@ -45,5 +50,6 @@ module.exports = {
     updateUserActive,
     updateUserPassword,
     findUser,
+    findUserById,
     updateUser
 }

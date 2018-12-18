@@ -35,11 +35,9 @@ class NormalLoginForm extends React.Component {
                     if (res.data.code === 200) {
                         message.success(res.data.desc, 1, () => {
                             this.props.userInfo.setInfo({
-                                isLogin: false,
-                                userId:'',
+                                id:'',
                                 userName: values.userName,
                                 email: values.email,
-                                userImg: '',
                                 isActive: false
                             });
                             this.props.operate.setVisible(false);

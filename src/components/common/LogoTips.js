@@ -5,7 +5,7 @@ import React from 'react';
 
 export default class LogoTips extends React.Component {
     static defaultProps = {
-        title: '欢迎来到电影网'
+        title: '爱生活，爱电影，欢迎来到电影网'
     }
 
     render() {

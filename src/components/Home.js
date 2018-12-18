@@ -15,6 +15,7 @@ export default class Home extends React.Component {
                             <use xlinkHref="#icon-xiaogantanhao"></use>
                         </svg>
                         This is icon!{this.props.userInfo.time}
+                        <img src={require('../static/images/poster-1.jpg')} alt=""/>
                     </h1>
 				</div>
       		</div>

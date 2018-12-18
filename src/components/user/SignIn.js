@@ -45,6 +45,7 @@ class NormalLoginForm extends React.Component {
                                 this.props.history.replace('/');
                             }
                             cookie.set('isLogin', true, res.data.expiresDays);
+                            cookie.set('userId', resData.id, res.data.expiresDays);
                         })
                     } else {
                         message.error(res.data.desc, 1)

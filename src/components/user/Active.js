@@ -25,6 +25,7 @@ class Active extends React.Component {
 
 
     componentDidMount() {
+        console.log(this)
         this.sendActiveEmail();
     }
 

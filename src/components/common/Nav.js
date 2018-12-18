@@ -44,6 +44,7 @@ export default class Nav extends Component {
     }
 
     componentDidMount() {
+
         axios.get(`/api/session?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 let resData = res.data.data;
@@ -53,9 +54,11 @@ export default class Nav extends Component {
                     isActive: resData.active === 1 ? true : false
                 }));
                 cookie.set('isLogin', true, res.data.expiresDays);
+                cookie.set('userId', resData.id, res.data.expiresDays);
             } else {
                 this.props.userInfo.setInfo({});
                 cookie.delete('isLogin');
+                cookie.delete('userId');
             }
         }).catch(err => {
             console.log(err);
@@ -67,6 +70,7 @@ export default class Nav extends Component {
             if (res.data.code === 200) {
                 this.props.userInfo.setInfo({});
                 cookie.delete('isLogin');
+                cookie.delete('userId');
                 this.props.history.replace("/");
             }
         }).catch(err => {
@@ -95,7 +99,7 @@ export default class Nav extends Component {
         });
         let headPic;
         if (avatar) {
-            headPic = require(`../../static/upload/${avatar}`);
+            headPic = require(`../../static/uploads/${avatar}`);
         } else {
             headPic = require('../../static/images/default-head.png');
         }

@@ -38,7 +38,7 @@ const users =
      avatar VARCHAR(100) DEFAULT NULL,
      create_time VARCHAR(100) NOT NULL,
      active TINYINT DEFAULT 0,
-     phone INT(11) DEFAULT NULL,
+     phone VARCHAR(11) DEFAULT NULL,
      role INT(11) DEFAULT 0,
      userSign VARCHAR(100) DEFAULT NULL,
      sex TINYINT DEFAULT 1,     
