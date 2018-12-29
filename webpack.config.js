@@ -19,13 +19,20 @@ module.exports = {
                 loader: 'postcss-loader'
             }]
         },{
-            test: /\.(png|jpg|gif)$/,
+            test: /\.(ico|png|jpg|gif)$/,
             use:[{
                 loader: 'url-loader',
                 options: {
                     limit: 8192 // 小于8KB 使用base64格式图片
                 }
             }]
+        }, {
+            test: /\.svg$/,
+            loader: 'svg-sprite-loader',
+            options: {
+                name: '[name]',
+                symbolId: 'icon-[name]'
+            }
         }]
     },
     resolve: {
@@ -35,6 +42,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'demo',
             template: './templates/index.html',
+            favicon: './src/static/images/favicon.ico',
             inject: 'body'
         }),
         new webpack.DefinePlugin({

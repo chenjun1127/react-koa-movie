@@ -2,7 +2,7 @@
  * Created by ChenJun on 2018/12/4
  */
 const router = require('koa-router')();
-const sql = require('../sql');
+const user_sql = require('../sql/user');
 const dayjs = require('dayjs');
 const {validate, enbcrypt} = require('../utils/bcrypt');
 const sendMail = require('../utils/sendMail');
@@ -25,7 +25,7 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 // 获取session状态
 router.get('/session', async (ctx) => {
-    await sql.findUserData().then((res) => {
+    await user_sql.findUserData().then((res) => {
         if (res.length && ctx.session.user) {
             ctx.body = {
                 code: 200,
@@ -33,7 +33,8 @@ router.get('/session', async (ctx) => {
                 expiresDays: ctx.session.expiresDays
             }
         } else {
-            ctx.session = null;
+            ctx.session.user = '';
+            ctx.session.expiresDays = 0;
             ctx.body = {
                 code: 502,
                 desc: '暂无登录状态'
@@ -47,14 +48,14 @@ router.post('/user/signUp', async (ctx) => {
     const {name, password, email, captcha} = ctx.request.body;
     const create_time = dayjs().format();
     if (captcha.toLowerCase() === ctx.session.code.toLowerCase()) {
-        await sql.findUser(name).then(async res => {
+        await user_sql.findUser(name).then(async res => {
             if (res.length) {
                 ctx.body = {
                     code: 501,
                     desc: '用户已存在'
                 }
             } else {
-                await sql.insertUser([name, await enbcrypt(password), email, create_time]).then(res => {
+                await user_sql.insertUser([name, await enbcrypt(password), email, create_time]).then(res => {
                     // console.log('注册成功', res);
                     ctx.body = {
                         code: 200,
@@ -73,7 +74,7 @@ router.post('/user/signUp', async (ctx) => {
 // 登录
 router.post('/user/signIn', async (ctx) => {
     const {name, password, remember} = ctx.request.body;
-    await sql.findUser(name).then(async res => {
+    await user_sql.findUser(name).then(async res => {
         if (!res.length) {
             ctx.body = {
                 code: 502,
@@ -112,7 +113,7 @@ router.post('/user/getBackPassword', async (ctx) => {
                 desc: '此邮箱找回密码确认邮件已发送，如未收到请10分钟后再试'
             }
         } else {
-            await sql.findUser(name).then(async res => {
+            await user_sql.findUser(name).then(async res => {
                 if (!res.length) {
                     ctx.body = {
                         code: 502,
@@ -175,14 +176,14 @@ router.get('/user/resetLink', async (ctx) => {
 // 重置密码
 router.post('/user/restPassword', async (ctx) => {
     const {newPassword, name} = ctx.request.body;
-    await sql.findUser(name).then(async res => {
+    await user_sql.findUser(name).then(async res => {
         if (!res.length) {
             ctx.body = {
                 code: 502,
                 desc: '用户不存在'
             }
         } else {
-            await sql.updateUserPassword([await enbcrypt(newPassword), name]).then(() => {
+            await user_sql.updateUserPassword([await enbcrypt(newPassword), name]).then(() => {
                 ctx.body = {
                     code: 200,
                     desc: '重置密码成功'
@@ -222,14 +223,14 @@ router.post('/user/activeAccount', async (ctx) => {
                 desc: '链接错误或者已经失效'
             }
         } else {
-            await sql.findUser(name).then(async res => {
+            await user_sql.findUser(name).then(async res => {
                 if (!res.length) {
                     ctx.body = {
                         code: 502,
                         desc: '用户不存在'
                     }
                 } else {
-                    await sql.updateUserActive([1, name]).then(() => {
+                    await user_sql.updateUserActive([1, name]).then(() => {
                         ctx.body = {
                             code: 200,
                             desc: '账号激活成功',
@@ -275,9 +276,9 @@ router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
         _avatar = null;
     }
     const sign = userSign && userSign !== "undefined" ? userSign : null;
-    await sql.updateUser([email, _avatar, phone, sign, sex, name]).then(async (res) => {
+    await user_sql.updateUser([email, _avatar, phone, sign, sex, name]).then(async (res) => {
         // 更新之后，更新session
-        await sql.findUser(name).then(res => {
+        await user_sql.findUser(name).then(res => {
             ctx.session.user = res[0]
             ctx.body = {
                 code: 200,
@@ -295,7 +296,7 @@ router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
 })
 // 根据ID查找用户最新信息
 router.get('/user/getInfo', async (ctx) => {
-    await sql.findUserById(ctx.request.query.id).then(async res => {
+    await user_sql.findUserById(ctx.request.query.id).then(async res => {
         ctx.session.user = res[0];
         ctx.body = {
             code: 200,

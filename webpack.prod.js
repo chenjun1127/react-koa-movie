@@ -27,7 +27,7 @@ module.exports = {
                 loader: 'postcss-loader'
             }]
         }, {
-            test: /\.(png|jpg|gif)$/,
+            test: /\.(ico|png|jpg|gif)$/,
             use: [{
                 loader: 'url-loader',
                 options: {
@@ -35,6 +35,9 @@ module.exports = {
                     name: 'images/[hash:8].[name].[ext]'
                 }
             }]
+        },  {
+            test: /\.svg$/,
+            loader: 'svg-inline-loader'
         }]
     },
     resolve: {
@@ -48,6 +51,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             title: 'demo',
             template: './templates/index.html',
+            favicon: './src/static/images/favicon.ico',
             inject: 'body'
         }),
         new OptimizeCssAssetsPlugin(),
@@ -65,7 +69,7 @@ module.exports = {
     },
     entry: {
         app: './src/index.js',
-        vendor: ['react', 'react-dom', 'react-router', './src/static/js/iconfont.js']
+        // vendor: ['react', 'react-dom', 'react-router', './src/static/js/iconfont.js']
     },
 
     output: {

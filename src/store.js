@@ -1,4 +1,4 @@
-import {observable, action} from 'mobx';
+import {observable, action, toJS} from 'mobx';
 
 
 class UserInfo {
@@ -28,7 +28,16 @@ class Operate {
     }
 }
 
+class CityLoc {
+    @observable loc = {id: '', n: ''};
+    @action
+    setLoc = (obj) => {
+        this.loc = obj;
+    }
+}
+
 
 const userInfo = new UserInfo();
 const operate = new Operate();
-export {userInfo, operate};
+const cityLoc = new CityLoc();
+export {userInfo, operate,cityLoc};

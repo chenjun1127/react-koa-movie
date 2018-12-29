@@ -26,16 +26,18 @@ app.use(koaSession({
         maxage: THIRTY_MINTUES
     }
 }));
-
 app.use(session(sessionConfig, app));
-
 const captcha = require('./routers/captcha');
 const user = require('./routers/user');
+const cities = require('./routers/cities');
+const movies = require('./routers/movies');
 
 app.context.author = 'Jone-chen';
 app.use(captcha.routes());
 app.use(user.routes());
-// app.use(second.routes());
+app.use(cities.routes());
+app.use(movies.routes());
+
 // app.use(third.routes());
 
 app.listen(port, () => {

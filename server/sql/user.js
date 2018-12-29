@@ -1,7 +1,7 @@
 /**
  * Created by ChenJun on 2018/12/5
  */
-const query = require('./db');
+const query = require('../db');
 
 const findUserData = () => {
     let _sql = `select * from users`

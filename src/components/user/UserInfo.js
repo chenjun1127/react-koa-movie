@@ -41,7 +41,8 @@ class UserInfo extends React.Component {
                             this.props.history.push(`/user/center/${cookie.get('userId')}`);
                         })
                     } else {
-                        console.log("error:" + res.data.desc);
+                        // console.log("error:" + res.data.desc);
+                        message.error(res.data.message,1)
                     }
                 }).catch(err => {
                     console.log(err);

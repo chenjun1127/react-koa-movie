@@ -44,12 +44,23 @@ const users =
      sex TINYINT DEFAULT 1,     
      PRIMARY KEY ( id )
     );`
+const cities =
+    `create table if not exists cities(
+     id INT(11) NOT NULL AUTO_INCREMENT,
+     locationId INT(11) NOT NULL,
+     n VARCHAR(100) NOT NULL,
+     count INT(11) NOT NULL,
+     pinyinFull VARCHAR(100) NOT NULL,
+     pinyinShort VARCHAR(100) DEFAULT NULL,
+     PRIMARY KEY ( id )
+    );`
 
 const createTable = function (sql) {
     return query(sql, [])
 }
 
 createTable(users);
+createTable(cities);
 
 
-module.exports=query;
+module.exports = query;

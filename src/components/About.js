@@ -1,7 +1,8 @@
 import React from 'react';
+import Loading from './common/Loading'
 const About = () => (
     <div>
-        <h2>About</h2>
+        <Loading/>
     </div>
 );
 
