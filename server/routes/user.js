@@ -184,7 +184,7 @@ router.post('/user/restPassword', async(ctx) => {
                 desc: '用户不存在'
             }
         } else {
-            await user_sql.updateUserPassword([await enbcrypt(newPassword), name]).then(() => {
+            await User.update({ password: await enbcrypt(newPassword) }, { where: { name } }).then(() => {
                 ctx.body = {
                     code: 200,
                     desc: '重置密码成功'
