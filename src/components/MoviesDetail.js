@@ -8,7 +8,8 @@ import Footer from "./common/Footer";
 import axios from 'axios';
 import {cookie} from "../utils/cookie";
 import {Row, Col} from "antd";
-
+import LightBox from './common/LightBox';
+import MoviesComment from './movies/MoviesComment';
 export default class MoviesDetail extends React.Component {
     state = {data: null}
 
@@ -19,10 +20,8 @@ export default class MoviesDetail extends React.Component {
 
     getDetail(id, locationId) {
         axios.get(`/api/movies/detail?movieId=${id}&locationId=${locationId}&t=${Date.now()}`).then(res => {
-            console.log(res);
             if (res.data.code === 200) {
                 const data = res.data.data.data.basic;
-                console.log(data);
                 this.setState({data})
             }
         })
@@ -54,10 +53,11 @@ export default class MoviesDetail extends React.Component {
                                 {actors.length ? <div className="m-title">主演：{actors}</div> : null}
                                 <div className="m-title">类型：{data.type.join(' ')}</div>
                                 <div className="m-title summary">简介：{data.story}</div>
-                                {data.stageImg.list.length ? <MoviesImg data={data} movieId={this.props.match.params.id}/> : null}
+                                {data.stageImg.list.length && <MoviesImg data={data}/>}
                             </Col>
                         </Row>
-
+                        <div className="public-title">影评</div>
+                        <MoviesComment {...this.props}/>
                     </div>
                 </div>
                 <Footer/>
@@ -75,105 +75,6 @@ class MoviesImg extends React.Component {
                 <h1 className="video-title"><span>{data.stageImg.list.length}</span>个剧照</h1>
                 <LightBox images={data.stageImg.list} loop={true}/>
             </div>
-        )
-    }
-}
-
-class LightBox extends React.Component {
-    state = {visible: false, currentIndex: 0}
-
-    handleClick(index) {
-        this.setState({visible: true, currentIndex: index});
-    }
-
-    handlePrev(index) {
-        index--;
-        if (index < 0) {
-            index = this.props.images.length - 1
-        }
-        this.refs.ol.style.left = '-' + 100 * index + '%';
-    }
-
-    handleNext(index) {
-        console.log(window.innerHeight)
-        index++;
-        if (index > this.props.images.length - 1) {
-            index = 0
-        }
-        this.refs.ol.style.left = '-' + 100 * index + '%';
-    }
-
-    cancel() {
-        this.setState({visible: false})
-    }
-
-    renderModalImage() {
-        const {images, showTitle, loop} = this.props;
-        const {visible, currentIndex} = this.state;
-        const w = images.length * 100;
-        const li_w = 100 / images.length;
-        const imgList = images.map((item, index) => {
-            if (images.length === 1) {
-                return (
-                    <li key={index} style={{width: `${li_w}%`}}>
-                        <div>
-                            <img src={item.imgUrl} alt={item.imgId}/>
-                            {showTitle ? <p>{index},{item.imgId}</p> : null}
-                        </div>
-                    </li>
-                )
-            } else {
-                return (
-                    <li key={index} style={{width: `${li_w}%`}}>
-                        <div>
-                            <img src={item.imgUrl} alt={item.imgId} />
-                            {showTitle ? <p>{index},{item.imgId}</p> : null}
-                        </div>
-                        {
-                            !loop && index === 0 ? null :
-                                <span className="prev" onClick={this.handlePrev.bind(this, index)}>
-                                    <svg>
-                                        <use xlinkHref={`#icon-arrow-l`}/>
-                                    </svg>
-                                </span>
-                        }
-                        {
-                            !loop && index === images.length - 1 ? null :
-                                <span className="next" onClick={this.handleNext.bind(this, index)}>
-                                    <svg>
-                                        <use xlinkHref={`#icon-arrow-r`}/>
-                                    </svg>
-                                </span>
-                        }
-                    </li>
-                )
-            }
-        });
-        return (
-            <div className={visible ? 'light-box-mask show' : 'light-box-mask'}>
-                <div className="light-box-content">
-                    <span className="light-box-close" onClick={this.cancel.bind(this)}>&times;</span>
-                    <ol style={{position: 'absolute', left: `-${currentIndex * 100}%`, top: 0, height: '100%', width: `${w}%`}} ref="ol">
-                        {imgList}
-                    </ol>
-                </div>
-            </div>
-        )
-    }
-
-    render() {
-        return (
-            <ul className="img-list">
-                {
-                    this.props.images.map((item, index) => {
-                        return (
-                            <li key={index}><a href="javascript:void(0)" onClick={this.handleClick.bind(this, index)} style={{backgroundImage: `url(${item.imgUrl})`}}><img
-                                src={item.imgUrl}/></a></li>
-                        )
-                    })
-                }
-                {this.renderModalImage()}
-            </ul>
         )
     }
 }

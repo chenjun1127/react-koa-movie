@@ -7,7 +7,7 @@ const MysqlStore = require('koa-mysql-session');
 const koaBody = require('koa-body');
 const app = new Koa();
 const port = 5000;
-
+require('./models/ref');
 app.use(koaBody());
 // session存储配置
 const sessionMysqlConfig = {
@@ -27,18 +27,17 @@ app.use(koaSession({
     }
 }));
 app.use(session(sessionConfig, app));
-const captcha = require('./routers/captcha');
-const user = require('./routers/user');
-const cities = require('./routers/cities');
-const movies = require('./routers/movies');
-
+const captcha = require('./routes/captcha');
+const user = require('./routes/user');
+const cities = require('./routes/cities');
+const movies = require('./routes/movies');
+const comment = require('./routes/comment');
 app.context.author = 'Jone-chen';
 app.use(captcha.routes());
 app.use(user.routes());
 app.use(cities.routes());
 app.use(movies.routes());
-
-// app.use(third.routes());
+app.use(comment.routes());
 
 app.listen(port, () => {
     console.log('app running on port: ' + port);

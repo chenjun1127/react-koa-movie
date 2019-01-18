@@ -14,6 +14,7 @@ import PrivateRoute from '../components/common/PrivateRoute';
 import NoMatch from '../components/common/NoMatch';
 import MoviesDetail from '../components/MoviesDetail';
 import Feature from "../components/Feature";
+import Award from "../components/Award";
 const Routes = () => (
 
     <Router>
@@ -27,6 +28,7 @@ const Routes = () => (
             <Route path="/user/active_status" component={AccountStatus}/>
             <Route path="/movies/feature/:id" component={Feature}/>
             <Route path="/movies/detail/:id" component={MoviesDetail}/>
+            <Route path="/movies/award/:id" component={Award}/>
             <PrivateRoute path="/user/center/:id" component={UserCenter}/>
             <PrivateRoute path="/user/info" component={UserInfo}/>
             /***权限控制***/

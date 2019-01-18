@@ -1,66 +1,22 @@
-const db = require('mysql');
+const Sequelize = require('sequelize');
 const config = require('./config.js');
-const pool = db.createPool({
+const sequelize = new Sequelize(config.database.DATABASE, config.database.USERNAME, config.database.PASSWORD, {
     host: config.database.HOST,
-    user: config.database.USERNAME,
-    password: config.database.PASSWORD,
-    database: config.database.DATABASE
+    dialect: 'mysql',
+    port: config.database.PORT,
+    timezone: "+08:00",
+    pool: {
+        max: 5,
+        min: 0,
+        idle: 10000
+    }
 });
 
-const query = (sql, values) => {
-    return new Promise((resolve, reject) => {
-        pool.getConnection((err, connection) => {
-            if (err) {
-                reject(err)
-            } else {
-                connection.query(sql, values, (err, rows) => {
-                    if (err) {
-                        reject(err)
-                    } else {
-                        resolve(rows)
-                    }
-                    connection.release()
-                })
-            }
-        })
-    })
-}
-/*
-    active 0==>未激活，1==>激活
-    sex 1==>男，2==>女,3==>保密
- */
-const users =
-    `create table if not exists users(
-     id INT(11) NOT NULL AUTO_INCREMENT,
-     name VARCHAR(100) NOT NULL,
-     password VARCHAR(100) NOT NULL,
-     email VARCHAR(100) NOT NULL,
-     avatar VARCHAR(100) DEFAULT NULL,
-     create_time VARCHAR(100) NOT NULL,
-     active TINYINT DEFAULT 0,
-     phone VARCHAR(11) DEFAULT NULL,
-     role INT(11) DEFAULT 0,
-     userSign VARCHAR(100) DEFAULT NULL,
-     sex TINYINT DEFAULT 1,     
-     PRIMARY KEY ( id )
-    );`
-const cities =
-    `create table if not exists cities(
-     id INT(11) NOT NULL AUTO_INCREMENT,
-     locationId INT(11) NOT NULL,
-     n VARCHAR(100) NOT NULL,
-     count INT(11) NOT NULL,
-     pinyinFull VARCHAR(100) NOT NULL,
-     pinyinShort VARCHAR(100) DEFAULT NULL,
-     PRIMARY KEY ( id )
-    );`
+//测试数据库链接
+sequelize.authenticate().then(() => {
+    console.log('Connection has been established successfully.');
+}).catch(err => {
+    console.error('Unable to connect to the database:', err);
+});
 
-const createTable = function (sql) {
-    return query(sql, [])
-}
-
-createTable(users);
-createTable(cities);
-
-
-module.exports = query;
+exports.sequelize = sequelize;

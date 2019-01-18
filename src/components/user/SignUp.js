@@ -36,7 +36,7 @@ class NormalLoginForm extends React.Component {
                         message.success(res.data.desc, 1, () => {
                             this.props.userInfo.setInfo({
                                 id:'',
-                                userName: values.userName,
+                                name: values.userName,
                                 email: values.email,
                                 isActive: false
                             });

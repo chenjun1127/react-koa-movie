@@ -19,6 +19,7 @@ export default class Home extends React.Component {
         this.getHotCity();
         this._onBlurHandler();
         const locObj = cookie.get('defaultCity') ? JSON.parse(cookie.get('defaultCity')) : this.state.loc;
+        cookie.set('defaultCity', JSON.stringify({id: locObj.id, n: locObj.n}), 10);
         this.getMovies(1, locObj.id);
         this.featureMovies();
     }
@@ -78,7 +79,7 @@ export default class Home extends React.Component {
     }
 
     tabClick(key) {
-        this.setState({tabCurrentIndex: Number(key)})
+        this.setState({tabCurrentIndex: Number(key)});
         const locObj = cookie.get('defaultCity') ? JSON.parse(cookie.get('defaultCity')) : this.state.loc;
         this.getMovies(Number(key), locObj.id);
     }

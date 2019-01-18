@@ -25,12 +25,12 @@ class Active extends React.Component {
 
 
     componentDidMount() {
-        console.log(this)
         this.sendActiveEmail();
     }
 
     sendActiveEmail() {
         const {name, email, isActive} = this.props.userInfo.info;
+        console.log(name,email,isActive)
         if (name && email && !isActive) {
             axios.post('/api/user/activeEmail', {name: name, email, url: location.href + '_status'}).then(res => {
                 if (res.data.code !== 200) {

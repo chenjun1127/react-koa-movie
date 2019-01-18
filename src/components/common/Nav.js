@@ -44,7 +44,6 @@ export default class Nav extends Component {
     }
 
     componentDidMount() {
-
         axios.get(`/api/session?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 let resData = res.data.data;

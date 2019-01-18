@@ -38,11 +38,11 @@ class NormalLoginForm extends React.Component {
                                 isLogin: true,
                                 isActive: resData.active === 1 ? true : false
                             }));
-                            this.props.operate.setVisible(false);
                             if (res.data.data.active === 0) {
+                                this.props.operate.setVisible(false);
                                 this.props.history.push('/user/active');
                             } else {
-                                this.props.history.replace('/');
+                                this.props.operate.setVisible(false);
                             }
                             cookie.set('isLogin', true, res.data.expiresDays);
                             cookie.set('userId', resData.id, res.data.expiresDays);

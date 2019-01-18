@@ -15,7 +15,7 @@ const FeatureMovies = (props) => {
                 renderItem={item => (
                     <List.Item>
                         <Card bodyStyle={{padding: '10px'}}>
-                            <a href="javascript:void(0)" onClick={() => { props.history.push(`/movies/feature/${item.feature_id}`) }}>
+                            <a href="javascript:void(0)" onClick={() => { props.history.push(`${item.feature_id ? `/movies/feature/${item.feature_id}`:`/movies/award/1?url=${item.link.split('.com')[1]}`}`) }}>
                                 <dl className="m-pic clearfix">
                                     <dt><img src={item.bigImg}/></dt>
                                     {item.smallImg.map((t, i) => <dd key={i}><img src={t}/> {i === item.smallImg.length - 1 ? <strong><i>{item.total}</i>部电影>></strong> : null}

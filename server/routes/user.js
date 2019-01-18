@@ -2,12 +2,13 @@
  * Created by ChenJun on 2018/12/4
  */
 const router = require('koa-router')();
-const user_sql = require('../sql/user');
 const dayjs = require('dayjs');
 const {validate, enbcrypt} = require('../utils/bcrypt');
 const sendMail = require('../utils/sendMail');
-const sessionConfig = require('../session.config')
+const sessionConfig = require('../session.config');
 const multer = require('koa-multer'); //加载koa-multer模块
+const {sequelize} = require("../db");
+const User = sequelize.import("../models/user");
 //文件上传
 //配置
 const storage = multer.diskStorage({
@@ -25,41 +26,40 @@ const storage = multer.diskStorage({
 const upload = multer({storage: storage});
 // 获取session状态
 router.get('/session', async (ctx) => {
-    await user_sql.findUserData().then((res) => {
-        if (res.length && ctx.session.user) {
-            ctx.body = {
-                code: 200,
-                data: ctx.session.user,
-                expiresDays: ctx.session.expiresDays
-            }
-        } else {
-            ctx.session.user = '';
-            ctx.session.expiresDays = 0;
-            ctx.body = {
-                code: 502,
-                desc: '暂无登录状态'
-            }
+    if (ctx.session.user) {
+        ctx.body = {
+            code: 200,
+            data: ctx.session.user,
+            expiresDays: ctx.session.expiresDays
         }
-    })
-
+    } else {
+        ctx.session.user = '';
+        ctx.session.expiresDays = 0;
+        ctx.body = {
+            code: 502,
+            desc: '暂无登录状态'
+        }
+    }
 });
 // 注册
 router.post('/user/signUp', async (ctx) => {
-    const {name, password, email, captcha} = ctx.request.body;
-    const create_time = dayjs().format();
+    const {name, password, captcha} = ctx.request.body;
+    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
     if (captcha.toLowerCase() === ctx.session.code.toLowerCase()) {
-        await user_sql.findUser(name).then(async res => {
-            if (res.length) {
+        await User.findOne({where: {name}}).then(async res => {
+            if (res) {
                 ctx.body = {
                     code: 501,
                     desc: '用户已存在'
                 }
             } else {
-                await user_sql.insertUser([name, await enbcrypt(password), email, create_time]).then(res => {
-                    // console.log('注册成功', res);
+                const user = Object.assign({}, ctx.request.body, {password: await enbcrypt(password), createTime});
+                delete user.captcha;
+                await User.create(user).then(res => {
                     ctx.body = {
                         code: 200,
-                        desc: '注册成功，去登录吧'
+                        desc: '注册成功，去登录吧',
+                        data: res.toJSON()
                     }
                 })
             }
@@ -71,24 +71,25 @@ router.post('/user/signUp', async (ctx) => {
         }
     }
 })
-// 登录
+// // 登录
 router.post('/user/signIn', async (ctx) => {
     const {name, password, remember} = ctx.request.body;
-    await user_sql.findUser(name).then(async res => {
-        if (!res.length) {
+    await User.findOne({where: {name}}).then(async res => {
+        if (!res) {
             ctx.body = {
                 code: 502,
                 desc: '用户不存在'
             }
         } else {
-            await validate(password, res[0].password).then(boolean => {
+            const user = res.toJSON();
+            await validate(password, user.password).then(boolean => {
                 if (boolean) {
-                    ctx.session.user = remember ? res[0] : '';
+                    ctx.session.user = remember ? user : '';
                     ctx.session.expiresDays = sessionConfig.maxAge / 1000 / 3600 / 24; // 过期的天数
                     ctx.body = {
                         code: 200,
                         desc: '登录成功',
-                        data: res[0],
+                        data: user,
                         expiresDays: sessionConfig.maxAge / 1000 / 3600 / 24
                     }
                 } else {
@@ -107,14 +108,14 @@ router.post('/user/getBackPassword', async (ctx) => {
     if (captcha.toLowerCase() === ctx.session.code.toLowerCase()) {
         // 同个账号10分钟之内禁止重复发邮件
         if (ctx.session.sendTime && ctx.session.userName && ctx.session.userName === name && ((time - ctx.session.sendTime) / 1000 / 60) < 10) {
-            console.log(ctx.session.sendTime, (time - ctx.session.sendTime) / 1000 / 60);
+            // console.log(ctx.session.sendTime, (time - ctx.session.sendTime) / 1000 / 60);
             ctx.body = {
                 code: 505,
                 desc: '此邮箱找回密码确认邮件已发送，如未收到请10分钟后再试'
             }
         } else {
-            await user_sql.findUser(name).then(async res => {
-                if (!res.length) {
+            await User.findOne({where: {name}}).then(async res => {
+                if (!res) {
                     ctx.body = {
                         code: 502,
                         desc: '用户不存在'
@@ -176,8 +177,8 @@ router.get('/user/resetLink', async (ctx) => {
 // 重置密码
 router.post('/user/restPassword', async (ctx) => {
     const {newPassword, name} = ctx.request.body;
-    await user_sql.findUser(name).then(async res => {
-        if (!res.length) {
+    await User.findOne({where: {name}}).then(async res => {
+        if (!res) {
             ctx.body = {
                 code: 502,
                 desc: '用户不存在'
@@ -223,14 +224,14 @@ router.post('/user/activeAccount', async (ctx) => {
                 desc: '链接错误或者已经失效'
             }
         } else {
-            await user_sql.findUser(name).then(async res => {
-                if (!res.length) {
+            await User.findOne({where: {name}}).then(async res => {
+                if (!res) {
                     ctx.body = {
                         code: 502,
                         desc: '用户不存在'
                     }
                 } else {
-                    await user_sql.updateUserActive([1, name]).then(() => {
+                    await User.update({active: 1}, {where: {name}}).then(() => {
                         ctx.body = {
                             code: 200,
                             desc: '账号激活成功',
@@ -264,7 +265,6 @@ router.get('/user/signOut', async (ctx) => {
 // 更新个人信息
 router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
     let {name, email, userSign, sex, phone, avatar} = ctx.req.body;
-    // console.log(ctx.req.file, avatar);
     let _avatar;
     if (avatar) {
         _avatar = avatar;
@@ -276,17 +276,15 @@ router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
         _avatar = null;
     }
     const sign = userSign && userSign !== "undefined" ? userSign : null;
-    await user_sql.updateUser([email, _avatar, phone, sign, sex, name]).then(async (res) => {
-        // 更新之后，更新session
-        await user_sql.findUser(name).then(res => {
-            ctx.session.user = res[0]
-            ctx.body = {
-                code: 200,
-                desc: '保存成功',
-            }
-        })
+    await User.update({email, sex, phone, avatar: _avatar, userSign: sign}, {where: {name}});
+    // 更新之后，更新session
+    await User.findOne({where: {name}}).then(async res => {
+        ctx.session.user = res.toJSON();
+        ctx.body = {
+            code: 200,
+            desc: '保存成功',
+        }
     }).catch(err => {
-        // console.log(err)
         ctx.body = {
             code: 504,
             desc: '保存失败',
@@ -294,13 +292,15 @@ router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
         }
     })
 })
+
 // 根据ID查找用户最新信息
 router.get('/user/getInfo', async (ctx) => {
-    await user_sql.findUserById(ctx.request.query.id).then(async res => {
-        ctx.session.user = res[0];
+    await User.getUserById(ctx.request.query.id).then(async res => {
+        const user = res.toJSON();
+        ctx.session.user = user;
         ctx.body = {
             code: 200,
-            data: res[0]
+            data: user
         }
     }).catch(err => {
         ctx.body = {

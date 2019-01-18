@@ -2,13 +2,9 @@
  * Created by ChenJun on 2018/12/22
  */
 const router = require('koa-router')();
-const sql = require('../sql/user');
-const request = require("request");
 const API = require('../API/config.js');
 const koa2Req = require('koa2-request');
 const cheerio = require('cheerio');
-const dayjs = require('dayjs');
-const fs = require('fs');
 router.get('/movies/hot', async (ctx) => {
     const locationId = ctx.query.locationId;
     const res = await koa2Req(API.moviesHot + '?locationId=' + locationId, {json: true});
@@ -112,6 +108,52 @@ router.get('/movies/feature', async (ctx) => {
     }
 })
 
+router.get('/movies/award', async (ctx) => {
+    const {url, page} = ctx.query;
+    const newUrl = parseInt(page) > 1 ? `http://award.mtime.com${url}index-${page}.html` : `http://award.mtime.com${url}`;
+    if (newUrl) {
+        ctx.body = {
+            code: 200,
+            data: await cheerioData(newUrl)
+        };
+    } else {
+        ctx.body = {
+            code: 500,
+            data: '服务器出错了，请稍后再试...'
+        };
+    }
+
+    async function cheerioData(url) {
+        const res = await koa2Req(`${url}`);
+        const $ = cheerio.load(res.body);
+        let mainTitleArr = [];
+        let list = [];
+        $(".event_list>dl>dt").each((i, t) => {
+            mainTitleArr.push($(t).text())
+        });
+        const mainTitle = $(".award_head").find('h3').find('a').text();
+        $(".event_list>dl>dd").each((i, t) => {
+            let title = $(t).find(".yellowbox").find('dt').find('a').attr('title');
+            let img = $(t).find(".yellowbox").find('dt').find('img').attr('src');
+            let movieId = $(t).find(".yellowbox").find('dd').find('a').attr('href').replace(/\D/g, '');
+            let subList = [];
+            $(t).find(".bluebox").find('dl').each((i, s) => {
+                subList.push({
+                    title: $(s).find('dt').find('a').attr('title'),
+                    img: $(s).find('dt').find('img').attr('src'),
+                    movieId: $(s).find('dd').find('a').attr('href').replace(/\D/g, '')
+                })
+            });
+            list.push({
+                awardTitle: mainTitleArr[i],
+                win: {title, img, movieId},
+                nominee: subList
+            })
+        });
+        return {mainTitle, list, totalPage: $(".pagenav a").length - 2}
+    }
+})
+
 router.get('/movies/detail', async (ctx) => {
     const {movieId, locationId} = ctx.query;
     const res = await koa2Req(`${API.moviesDetail}?locationId=${locationId}&movieId=${movieId}`, {json: true});
@@ -120,25 +162,6 @@ router.get('/movies/detail', async (ctx) => {
         data: res.body
     };
 })
-
-
-// router.post('/movies/download', async (ctx) => {
-//     const {url, movieId} = ctx.request.body;
-//     const filename = movieId + '.mp4';
-//     const dirPath = './src/static/video/';
-//     if (!fs.existsSync(dirPath)) {
-//         fs.mkdirSync(dirPath);
-//     }
-//     var writeStream = fs.createWriteStream(dirPath + filename);
-//     var req = request(url);
-//     req.pipe(writeStream);
-//     ctx.body = {
-//         code: 200,
-//         data: filename
-//     }
-//
-//
-// })
 
 
 module.exports = router;
