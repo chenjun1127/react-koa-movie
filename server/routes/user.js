@@ -121,12 +121,12 @@ router.post('/user/getBackPassword', async(ctx) => {
                         desc: '用户不存在'
                     }
                 } else {
-                    if (email === res[0].email) {
+                    if (email === res.email) {
                         const href = url + '?type=resetPassword&t=' + Date.now();
                         await sendMail(email, '密码重置', `<h3>${name}您好，您申请了重置密码</h3><p>请在 1 小时内点击此链接以完成重置（如链接无法点击，请复制链接浏览器打开）</p><p>${href}</p>`).then(sendRes => {
                             ctx.session.user = '';
                             ctx.session.sendTime = time;
-                            ctx.session.userName = res[0].name;
+                            ctx.session.userName = res.name;
                             ctx.session.sendEmailTime = Date.now(); // 邮件发送的时间，用户点邮件链接的时候，判断当前链接有没有过期
                             ctx.body = { code: 200, desc: '发送邮件成功，请重新输入新密码', data: sendRes }
                         }).catch(err => {

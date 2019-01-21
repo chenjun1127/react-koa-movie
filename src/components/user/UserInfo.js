@@ -22,7 +22,7 @@ class UserInfo extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values, this.file);
-                console.log(this.props.userInfo.info.avatar)
+                console.log(this.props.userInfo.info.avatar);
                 let formData = new FormData();
                 let avatar = this.props.userInfo.info.avatar;
                 if (avatar) formData.append('avatar', avatar);
@@ -47,7 +47,6 @@ class UserInfo extends React.Component {
                 }).catch(err => {
                     console.log(err);
                 })
-
             }
         })
     }
@@ -153,7 +152,7 @@ class UserInfo extends React.Component {
                                     {getFieldDecorator('userSign', {
                                         // rules: [{required: false, message: '请输入11位数字的正确手机号', pattern: /^1[3456789]\d{9}$/}],
                                         rules: [{required: false}],
-                                        initialValue: userSign
+                                        initialValue: userSign && userSign!=='null' ? userSign:''
                                     })(
                                         <TextArea autosize={{minRows: 3, maxRows: 8}}/>
                                     )}

@@ -13,26 +13,13 @@ export default class Nav extends Component {
         tabs: [{
             text: '首页',
             path: '/',
+        },{
+            text: '正在热映',
+            path: '/movies/hot',
         }, {
-            text: '全部电影',
-            path: '/about',
-        }, {
-            text: '电影录入',
-            path: '/high-compent',
-        },]
-    }
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            currentIndex: 0,
-        }
-    }
-
-    handleClick(index) {
-        this.setState({
-            currentIndex: index
-        })
+            text: '即将上映',
+            path: '/movies/coming',
+        }]
     }
 
     sign(type) {
@@ -91,18 +78,12 @@ export default class Nav extends Component {
         const {visible} = this.props.operate;
         const tabList = this.props.tabs.map((item, index) => {
             return (
-                <li key={index} className={this.state.currentIndex === index ? 'active' : ''} onClick={this.handleClick.bind(this, index)}>
+                <li key={index} className={this.props.history.location.pathname === item.path ? 'active' : ''}>
                     <Link to={item.path}>{item.text}</Link>
                 </li>
             )
         });
-        let headPic;
-        if (avatar) {
-            headPic = require(`../../static/uploads/${avatar}`);
-        } else {
-            headPic = require('../../static/images/default-head.png');
-        }
-
+        let headPic = avatar ? require(`../../static/uploads/${avatar}`) : require('../../static/images/default-head.png');
         const menu = (
             <Menu>
                 <Menu.Item key="0" onClick={this.handleClickCenter.bind(this, id)}>我的主页 </Menu.Item>
@@ -111,7 +92,6 @@ export default class Nav extends Component {
                 <Menu.Item key="3" onClick={this.handleClickSignOut.bind(this)}>注销</Menu.Item>
             </Menu>
         );
-
 
         return (
             <div className="menu">

@@ -5,6 +5,7 @@ const router = require('koa-router')();
 const API = require('../API/config.js');
 const koa2Req = require('koa2-request');
 const cheerio = require('cheerio');
+const request = require('request')
 router.get('/movies/hot', async (ctx) => {
     const locationId = ctx.query.locationId;
     const res = await koa2Req(API.moviesHot + '?locationId=' + locationId, {json: true});
@@ -162,6 +163,5 @@ router.get('/movies/detail', async (ctx) => {
         data: res.body
     };
 })
-
 
 module.exports = router;

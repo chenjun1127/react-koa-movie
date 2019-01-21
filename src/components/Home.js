@@ -9,6 +9,8 @@ import HotMovies from './movies/HotMovies';
 import ComingMovies from "./movies/ComingMovies";
 import FeatureMovies from "./movies/FeatureMovies";
 import Footer from "./common/Footer";
+import Loading from "./common/Loading";
+
 const letters = "ABCDEFGHJKLMNPQRSTWXYZ".split('');
 @inject(["userInfo"], ["cityLoc"])
 @observer
@@ -46,7 +48,6 @@ export default class Home extends React.Component {
             var hotCities = sessionStorage.getItem('hotCities');
             this.createCities(JSON.parse(hotCities));
         }
-
     }
 
     createCities(list) {
@@ -123,25 +124,24 @@ export default class Home extends React.Component {
     }
 
     render() {
-        const {hotCityList, allCityList, loc, visible} = this.state;
+        const {hotCityList, allCityList, loc, visible, featureMovies} = this.state;
         const defaultCity = cookie.get('defaultCity') ? JSON.parse(cookie.get('defaultCity')) : null;
+        if (!hotCityList || !allCityList || !featureMovies) return <Loading/>;
         return (
             <div className="container">
                 <Nav history={this.props.history}/>
                 <div className="inner">
-                    <div className="mainInner" >
+                    <div className="mainInner">
                         <div className="locBox">
-                            {hotCityList && allCityList ?
-                                <Popover visible={visible} content={<RenderContent handleClick={this.handleClick.bind(this)} {...this.props} {...this.state}/>}
-                                         trigger={['click']} placement="topLeft">
-                                    <div className="loc" onClick={this.openPopover.bind(this)}>
-                                        <svg className="icon" aria-hidden="true">
-                                            <use xlinkHref="#icon-weizhi"></use>
-                                        </svg>
-                                        <span>{defaultCity ? defaultCity.n : loc.n}</span>
-                                    </div>
-                                </Popover> : null
-                            }
+                            <Popover visible={visible} content={<RenderContent handleClick={this.handleClick.bind(this)} {...this.props} {...this.state}/>}
+                                     trigger={['click']} placement="topLeft">
+                                <div className="loc" onClick={this.openPopover.bind(this)}>
+                                    <svg className="icon" aria-hidden="true">
+                                        <use xlinkHref="#icon-weizhi"></use>
+                                    </svg>
+                                    <span>{defaultCity ? defaultCity.n : loc.n}</span>
+                                </div>
+                            </Popover>
                         </div>
                         <Tabs defaultActiveKey="1" size="large" onTabClick={this.tabClick.bind(this)}
                               tabBarStyle={{margin: 0, display: 'flex', justifyContent: 'center', fontSize: '18px'}}>
@@ -190,7 +190,6 @@ class RenderContent extends React.Component {
                 )
             }
         })
-
     }
 
     renderTabContent(fromIndex, toIndex) {
@@ -221,5 +220,4 @@ class RenderContent extends React.Component {
             </div>
         )
     }
-
 }

@@ -396,6 +396,10 @@ $contentWidth: 1200px;
     text-align: center;
     font-size: 16px;
     padding-top: 12px;
+    height: 36px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
     color: rgba(0, 0, 0, 0.65);
 }
 
@@ -432,6 +436,10 @@ $contentWidth: 1200px;
         margin: 0 10px;
         display: block;
     }
+}
+
+.movies-list-more li {
+    margin-top: 20px;
 }
 
 .ant-carousel {
@@ -478,6 +486,10 @@ $contentWidth: 1200px;
     display: block;
     top: 11px;
     background: url("../../static/images/allicon24.png") no-repeat -160px -344px;
+}
+
+.movies-icon-1 {
+    background-position: -160px -272px;;
 }
 
 .loading {
@@ -997,7 +1009,8 @@ ul.img-list {
                 fill: #888;
                 cursor: pointer;
             }
-            .isSupport{
+
+            .isSupport {
                 fill: red;
             }
 

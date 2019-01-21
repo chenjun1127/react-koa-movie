@@ -2,7 +2,7 @@
  * Created by ChenJun on 2018/12/19
  */
 const router = require('koa-router')();
-const API = require('../API/config.js');
+const API = require('../API/config');
 const koa2Req = require('koa2-request');
 router.get('/cities', async (ctx) => {
     const res = await koa2Req(API.hotCitiesByCinema, {json: true});

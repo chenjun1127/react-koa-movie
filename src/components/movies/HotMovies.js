@@ -4,17 +4,18 @@
 
 import React from 'react';
 import {axios} from 'axios';
-import { Carousel} from 'antd';
-import {Link} from 'react-router-dom';
+import {Carousel} from 'antd';
 
 export default class HotMovies extends React.Component {
-
     createList(list, index) {
         const _list = list.slice(4 * (index - 1), 4 * (index - 1) + 4);
         return _list.map((item, i) => {
             return (
                 <li key={i}>
-                    <a className="movies-inner" onClick={() => {this.props.history.push(`/movies/detail/${item.id}`)}}>
+                    <a className="movies-inner" onClick={() => {
+                        this.props.history.push(`/movies/detail/${item.id}`)
+                    }}>
+                        <span className="movies-icon movies-icon-1"/>
                         <img src={item.img} className="movies-img"/>
                         <div className="movies-score">{item.r < 0 ? 0 : item.r}</div>
                         <div className="movies-text">{item.t}</div>
@@ -22,6 +23,11 @@ export default class HotMovies extends React.Component {
                 </li>
             )
         })
+    }
+
+    handleNavigator() {
+        sessionStorage.setItem('moviesHotData',JSON.stringify(this.props.moviesHotData));
+        this.props.history.push('/movies/hot');
     }
 
     render() {
@@ -34,14 +40,14 @@ export default class HotMovies extends React.Component {
                         {this.createList(moviesHotData.ms, index + 1)}
                     </div>
                 )
-            })
+            });
             return (
                 <div>
                     <Carousel autoplay className="carousel-box" dotsClass="movies-dots">
                         {list}
                     </Carousel>
                     <div className="movies-more">
-                        <Link to="/movies/hot">查看更多>></Link>
+                        <a href="javascript:void(0);" onClick={this.handleNavigator.bind(this)}>查看更多>></a>
                     </div>
                 </div>
             )

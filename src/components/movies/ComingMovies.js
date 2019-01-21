@@ -4,11 +4,9 @@
 
 import React from 'react';
 import {axios} from 'axios';
-import { Carousel} from 'antd';
-import {Link} from 'react-router-dom';
+import {Carousel} from 'antd';
 
 export default class ComingMovies extends React.Component {
-
     createList(list, index) {
         const _list = list.slice(4 * (index - 1), 4 * (index - 1) + 4);
         return _list.map((item, i) => {
@@ -24,6 +22,11 @@ export default class ComingMovies extends React.Component {
                 </li>
             )
         })
+    }
+
+    handleNavigator() {
+        sessionStorage.setItem('moviesComingData', JSON.stringify(this.props.moviesComingData));
+        this.props.history.push('/movies/coming');
     }
 
     render() {
@@ -43,7 +46,7 @@ export default class ComingMovies extends React.Component {
                         {list}
                     </Carousel>
                     <div className="movies-more">
-                        <Link to="/movies/coming">查看更多>></Link>
+                        <a href="javascript:void(0);" onClick={this.handleNavigator.bind(this)}>查看更多>></a>
                     </div>
                 </div>
             )
