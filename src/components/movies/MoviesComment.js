@@ -8,6 +8,7 @@ import SignInAndSignUp from "../user/SignInAndSignUp";
 import {inject, observer} from 'mobx-react';
 import axios from 'axios';
 import dayjs from 'dayjs';
+import {Link} from 'react-router-dom';
 import 'dayjs/locale/zh-cn';
 
 const desc = ['超烂啊', '无力吐槽', '太差了', '很差', '一般', '很一般', '优秀', '非常优秀', '非常棒', '简直完美'];
@@ -72,7 +73,9 @@ export default class MoviesComment extends React.Component {
     }
 
     getAllComment() {
-        axios.get(`/api/comment/all?movieId=${parseInt(this.props.match.params.id)}&t=${Date.now()}`).then(res => {
+        const pageNo = 1;
+        const pageSize = 10;
+        axios.get(`/api/comment/all?movieId=${parseInt(this.props.match.params.id)}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then(res => {
             let supportArr = [];
             if (res.data.code === 200 && res.data.data.length > 0) {
                 this.setState({comments: res.data.data});
@@ -110,7 +113,8 @@ export default class MoviesComment extends React.Component {
         return (
             <div>
                 <Comment avatar={(<Avatar src={avatar ? require(`../../static/uploads/${avatar}`) : require('../../static/images/default-head.png')}/>)}
-                         content={(<Editor onChange={this.handleChange} onSubmit={this.handleSubmit} submitting={submitting} value={value} desc={desc} handleChangeRate={this.handleChangeRate} rateValue={rateValue}/>)}/>
+                         content={(<Editor onChange={this.handleChange} onSubmit={this.handleSubmit} submitting={submitting} value={value} desc={desc}
+                                           handleChangeRate={this.handleChangeRate} rateValue={rateValue}/>)}/>
                 <div className="public-title" style={{marginTop: '-30px'}}> 热门影评</div>
                 {
                     comments.length > 0 ? < CommentList comments={comments} handleClickSupport={this.handleClickSupport} commentsSupport={commentsSupport}
@@ -128,7 +132,7 @@ const CommentList = (props) => {
             <div key={index} className="comment-list">
                 <Avatar className="comment-avatar" src={item.user.avatar ? require(`../../static/uploads/${item.user.avatar}`) : require('../../static/images/default-head.png')}/>
                 <div className="comment-content">
-                    <div className="comment-title"><span> {item.user.name} </span> <em>发表于{dayjs(item.createTime).fromNow()}</em></div>
+                    <div className="comment-title"><Link to={`/user/center/${item.user.id}`}> {item.user.name} </Link> <em>发表于{dayjs(item.createTime).fromNow()}</em></div>
                     <Rate className="comment-rate" disabled allowHalf value={item.rate / 2}/>
                     <div className="comment-text"> {item.content} </div>
                     <div className="comment-support">

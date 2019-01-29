@@ -5,7 +5,9 @@ const router = require('koa-router')();
 const API = require('../API/config.js');
 const koa2Req = require('koa2-request');
 const cheerio = require('cheerio');
-const request = require('request')
+const {sequelize} = require("../db");
+const Movie = sequelize.import("../models/movie");
+const dayjs = require('dayjs');
 router.get('/movies/hot', async (ctx) => {
     const locationId = ctx.query.locationId;
     const res = await koa2Req(API.moviesHot + '?locationId=' + locationId, {json: true});
@@ -13,7 +15,7 @@ router.get('/movies/hot', async (ctx) => {
         code: 200,
         data: res.body
     };
-})
+});
 
 router.get('/movies/coming', async (ctx) => {
     const locationId = ctx.query.locationId;
@@ -22,7 +24,7 @@ router.get('/movies/coming', async (ctx) => {
         code: 200,
         data: res.body
     };
-})
+});
 
 router.get('/movies/featureMovies', async (ctx) => {
     const res = await koa2Req('http://www.mtime.com/');
@@ -62,7 +64,7 @@ router.get('/movies/featureMovies', async (ctx) => {
         data: dataArr,
         desc: '特色电影'
     };
-})
+});
 
 router.get('/movies/feature', async (ctx) => {
     const {feature_id, page} = ctx.query;
@@ -107,7 +109,7 @@ router.get('/movies/feature', async (ctx) => {
         });
         return {mainTitle, desc, list, pagerSlide}
     }
-})
+});
 
 router.get('/movies/award', async (ctx) => {
     const {url, page} = ctx.query;
@@ -153,8 +155,8 @@ router.get('/movies/award', async (ctx) => {
         });
         return {mainTitle, list, totalPage: $(".pagenav a").length - 2}
     }
-})
-
+});
+// 电影详情
 router.get('/movies/detail', async (ctx) => {
     const {movieId, locationId} = ctx.query;
     const res = await koa2Req(`${API.moviesDetail}?locationId=${locationId}&movieId=${movieId}`, {json: true});
@@ -162,6 +164,30 @@ router.get('/movies/detail', async (ctx) => {
         code: 200,
         data: res.body
     };
-})
+});
+// 电影保存
+router.post('/movies/save', async (ctx) => {
+    const {movieId} = ctx.request.body;
+    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    await Movie.findOne({where: {movieId}}).then(async movie => {
+        if (!movie) {
+            await Movie.create(Object.assign({}, ctx.request.body, {createTime})).then(() => {
+                    ctx.body = {
+                        code: 200
+                    }
+                }
+            ).catch(err => {
+                ctx.body = {
+                    code: 500,
+                    data: err.message
+                }
+            })
+        } else {
+            ctx.body = {
+                code: 200
+            }
+        }
+    })
+});
 
 module.exports = router;

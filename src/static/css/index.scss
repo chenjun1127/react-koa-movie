@@ -20,12 +20,12 @@ $contentWidth: 1200px;
     }
 }
 
-.menu {
-    box-shadow: 0px 2px 10px 0px rgba(0, 0, 0, 0.1), 0 1px rgba(0, 0, 0, 0.1);
+.top {
+    box-shadow: 0 2px 10px 0 rgba(0, 0, 0, 0.1), 0 1px rgba(0, 0, 0, 0.1);
     background: #fff;
     border-top: 2px solid $blurColor;
 
-    .menuBox {
+    .menu {
         display: flex;
         align-items: center;
         justify-content: space-between;
@@ -201,8 +201,7 @@ $contentWidth: 1200px;
 .uploadPic {
     position: relative;
     padding: 0;
-    margin: 25px auto;
-    margin-bottom: 0;
+    margin: 25px auto 0;
     overflow: hidden;
     width: 120px;
     height: 120px;
@@ -278,16 +277,17 @@ $contentWidth: 1200px;
     font-size: 24px;
 }
 
-.innerBox {
-    padding: 20px;
-    padding-top: 0;
+.inner-box {
+    padding: 0 20px 20px;
     background: #fff;
+    margin-bottom: 10px;
 }
 
-.infoInner {
+.info-inner {
     margin: 10px 0;
     background: #fff;
     padding: 20px;
+    min-height: 700px;
 }
 
 .list {
@@ -349,10 +349,9 @@ $contentWidth: 1200px;
         display: inline-block;
         box-sizing: border-box;
         cursor: pointer;
-        padding: 5px 0;
         float: left;
         position: relative;
-        padding-left: 16px;
+        padding: 5px 0 5px 16px;
 
         i {
             display: block;
@@ -368,8 +367,7 @@ $contentWidth: 1200px;
     }
 
     p {
-        margin: 0;
-        margin-bottom: 5px;
+        margin: 0 0 5px;
         display: block;
         clear: both
     }
@@ -620,13 +618,11 @@ $contentWidth: 1200px;
     border-left: 8px solid $blurColor;
     padding-left: 20px;
     margin: 40px 0;
-
 }
 
 .pre-desc {
     line-height: 180%;
     font-size: 16px;
-
     margin-bottom: 5px;
 }
 
@@ -773,6 +769,45 @@ $contentWidth: 1200px;
     height: 593px;
 }
 
+.movies-pic {
+    position: relative;
+    overflow: hidden;
+
+    .floatTips {
+        position: absolute;
+        left: 7.5px;
+        top: 0;
+        z-index: 3;
+        background: rgba(0, 0, 0, .5);
+        width: calc(100% - 15px);
+        height: 100%;
+        transform: translateY(-100%);
+        transition: all 0.2s ease-in-out 0s;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            fill: rgba(255, 255, 255, .8);
+            width: 60px;
+            height: 60px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .active {
+            fill: rgba(245, 85, 85, .8);
+            transform: scale(1.2);
+        }
+    }
+
+    &:hover {
+        .floatTips {
+            transform: translateY(0);
+        }
+    }
+}
+
 .m-title-1 {
     font-size: 24px;
     margin-bottom: 5px;
@@ -784,13 +819,12 @@ $contentWidth: 1200px;
 }
 
 .m-title-3 {
-    margin: 0;
     padding: 5px 8px;
     background: rgba(0, 0, 0, .8);
     color: #fff;
     border-radius: 5px;
     display: inline-block;
-    margin-bottom: 5px;
+    margin: 0 0 5px;
 }
 
 .m-title {
@@ -1011,7 +1045,7 @@ ul.img-list {
             }
 
             .isSupport {
-                fill: red;
+                fill: red
             }
 
             span {
@@ -1053,4 +1087,108 @@ ul.img-list {
     }
 }
 
+.u-title {
+    padding-bottom: 10px;
+    font-weight: bold;
+    font-size: 20px;
+}
 
+.collect-list {
+    li {
+        border-bottom: 1px solid #e1e1e1;
+        padding: 16px 0;
+
+        .list-title {
+            padding-bottom: 10px;
+            font-size: 16px;
+        }
+
+        .list-main {
+            display: flex;
+            align-items: center;
+            color: #333;
+
+            img {
+                width: 72px;
+                height: 106px;
+            }
+
+            .list-text {
+                h1 {
+                    font-size: 16px;
+                }
+
+                h2 {
+                    max-height: 42px;
+                }
+
+                h3 {
+                    color: #888;
+                    display: flex;
+                    align-items: center;
+
+
+                    svg.comment {
+                        fill: #888;
+                        width: 16px;
+                        height: 16px;
+                        margin-right: 5px;
+                    }
+
+                    svg.collect {
+                        fill: #888;
+                        width: 16px;
+                        height: 16px;
+                        margin-right: 5px;
+                    }
+                }
+
+                flex: 1;
+                padding-left: 15px;
+            }
+        }
+
+        &:first-child {
+            padding-top: 0;
+        }
+    }
+}
+
+.common-list {
+    @extend .collect-list;
+    padding-top: 15px;
+
+    li {
+        display: flex;
+        align-items: center;
+
+        a {
+            display: flex;
+            align-items: center;
+            flex: 1;
+
+            &:hover {
+                text-decoration: none;
+            }
+        }
+
+        img {
+            width: 60px;height: 60px;border-radius: 50%;overflow: hidden;
+        }
+
+        div {
+            flex: 1;
+            display: flex;
+
+            padding: 0 15px;
+            flex-direction: column;
+            justify-content: center;
+
+            p {margin-bottom: 0}
+        }
+    }
+}
+
+.follow-btn {
+    width: 90px;
+}

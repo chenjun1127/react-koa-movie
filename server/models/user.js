@@ -58,7 +58,7 @@ module.exports = function (sequelize, DataTypes) {
         timestamps: false, //取消默认生成的createdAt、updatedAt字段
         freezeTableName: false, // Model 对应的表名将与model名是否相同,false为在后面加s，为true则不会，将与model相同
         //classMethods与instanceMethods 注意：V4.x版本已经被移除
-        comment: "用户信息类",
+        comment: "用户信息表",
 
     });
     //静态方法

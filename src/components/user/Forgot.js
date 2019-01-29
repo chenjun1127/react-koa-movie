@@ -3,11 +3,9 @@
  */
 import React from 'react';
 import {Button, Form, Row, Col, Input, message} from 'antd';
-
 import axios from "axios/index";
 import goToEmail from '../../utils/email';
 import LogoTips from '../common/LogoTips';
-
 const FormItem = Form.Item;
 
 export default class Forgot extends React.Component {

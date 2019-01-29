@@ -65,9 +65,9 @@ class Active extends React.Component {
                                 }
                                 <div>
                                     {
-                                        this.state.isSend ? <Button type="primary" block className="forgot-button" onClick={this.toEmail.bind(this)}>前往邮箱</Button> : null
+                                        this.state.isSend ? <Button type="primary" block className="forgot-button" onClick={this.toEmail.bind(this)} htmlType="button">前往邮箱</Button> : null
                                     }
-                                    <Button block href="/">回到首页</Button>
+                                    <Button block href="/" >回到首页</Button>
                                 </div>
                             </div>
                         </div>
@@ -77,7 +77,6 @@ class Active extends React.Component {
         } else {
             return <Redirect to={"/"}/>
         }
-
     }
 }
 

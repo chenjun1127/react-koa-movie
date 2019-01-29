@@ -3,8 +3,9 @@
  */
 
 import React from 'react';
-import {Button, Form, Icon, Input, Checkbox,message} from 'antd';
+import {Button, Form, Icon, Input, Checkbox, message} from 'antd';
 import {cookie} from '../../utils/cookie';
+
 const FormItem = Form.Item;
 import {inject, observer} from 'mobx-react';
 import axios from "axios/index";
@@ -38,11 +39,14 @@ class NormalLoginForm extends React.Component {
                                 isLogin: true,
                                 isActive: resData.active === 1 ? true : false
                             }));
+                            this.props.operate.setVisible(false);
                             if (res.data.data.active === 0) {
-                                this.props.operate.setVisible(false);
                                 this.props.history.push('/user/active');
+                            } else if (this.props.history.location.pathname.indexOf('operate') > 0) {
+                                this.props.history.push('/');
                             } else {
-                                this.props.operate.setVisible(false);
+                                const movieId = sessionStorage.getItem('movieId');
+                                movieId && this.props.operate.setStatus({movieId, userId: this.props.userInfo.info.id});
                             }
                             cookie.set('isLogin', true, res.data.expiresDays);
                             cookie.set('userId', resData.id, res.data.expiresDays);

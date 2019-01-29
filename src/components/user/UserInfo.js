@@ -13,6 +13,7 @@ import {isEmptyObject} from '../../utils/tools';
 const {TextArea} = Input;
 const FormItem = Form.Item;
 const RadioGroup = Radio.Group;
+import Footer from "../common/Footer";
 
 @inject(['operate'], ['userInfo'])
 @observer
@@ -97,7 +98,7 @@ class UserInfo extends React.Component {
                 <div className="container">
                     <Nav {...this.props}/>
                     <div className="inner">
-                        <div className="infoInner">
+                        <div className="info-inner">
                             <Form onSubmit={this.handleSubmit} className="login-form">
                                 <div className="headPic uploadPic">
                                     <img ref="imgPreview" src={avatar ? require(`../../static/uploads/${avatar}`) : require('../../static/images/default-head.png')}/>
@@ -163,6 +164,7 @@ class UserInfo extends React.Component {
                             </Form>
                         </div>
                     </div>
+                    <Footer/>
                 </div>
             )
         }else{

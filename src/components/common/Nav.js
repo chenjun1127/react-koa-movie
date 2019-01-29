@@ -55,6 +55,8 @@ export default class Nav extends Component {
         axios.get(`/api/user/signOut?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 this.props.userInfo.setInfo({});
+                sessionStorage.removeItem('movieId');
+                this.props.operate.setStatus(0);
                 cookie.delete('isLogin');
                 cookie.delete('userId');
                 this.props.history.replace("/");
@@ -71,7 +73,6 @@ export default class Nav extends Component {
     handleClickInfo() {
         this.props.history.replace(`/user/info`);
     }
-
 
     render() {
         const {isLogin, id, avatar, name} = this.props.userInfo.info;
@@ -94,20 +95,20 @@ export default class Nav extends Component {
         );
 
         return (
-            <div className="menu">
-                <div className="menuBox">
+            <div className="top">
+                <div className="menu">
                     <ul className="menuList">{tabList}</ul>
                     {
                         !isLogin ?
                             <div className="userBox">
-                                <Button type="primary" onClick={this.sign.bind(this, 1)}>立即登录</Button>
-                                <Button onClick={this.sign.bind(this, 2)}>免费注册</Button>
+                                <Button type="primary" onClick={this.sign.bind(this, 1)} htmlType="button">立即登录</Button>
+                                <Button onClick={this.sign.bind(this, 2)} htmlType="button">免费注册</Button>
                             </div> :
                             <div className="userCenter">
                                 <span>欢迎您，</span><em>{name}</em>
                                 <Dropdown overlay={menu} trigger={['click']} placement="bottomRight">
                                     <div className="userImg">
-                                        <img src={headPic}/>
+                                        <img src={headPic} alt={headPic}/>
                                     </div>
                                 </Dropdown>
                             </div>

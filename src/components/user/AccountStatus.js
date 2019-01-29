@@ -6,11 +6,12 @@ import {Button} from 'antd';
 import axios from "axios/index";
 import LogoTips from '../common/LogoTips';
 import {inject, observer} from "mobx-react/index";
+import {withRouter} from "react-router-dom";
 
 @inject(['operate'], ['userInfo'])
 @observer
-export default class AccountStatus extends React.Component {
-    state = {isActive: true, msg: ''}
+class AccountStatus extends React.Component {
+    state = {isActive: true, msg: ''};
 
     componentDidMount() {
         const search = this.props.location.search;
@@ -28,6 +29,10 @@ export default class AccountStatus extends React.Component {
         })
     }
 
+    login() {
+        this.props.history.push('/operate');
+    }
+
     render() {
         return (
             <div className="bgGray">
@@ -38,19 +43,20 @@ export default class AccountStatus extends React.Component {
                         <div className="forgotTips">
                             <div className="emailTipsAccount">
                                 {
-                                   this.state.isActive?
-                                       <p className="blueColor"><a href="/">账号激活成功!</a></p>:
-                                       <p>账号激活失败，请发邮件至管理员邮箱 <span className="blueColor">（402074940@qq.com）</span>进行激活</p>
+                                    this.state.isActive ?
+                                        <p className="blueColor"><a href="/">账号激活成功!</a></p> :
+                                        <p>账号激活失败，请发邮件至管理员邮箱 <span className="blueColor">（402074940@qq.com）</span>进行激活</p>
                                 }
                             </div>
                             <div>
-                                <Button block href="/">回到首页</Button>
+                                <Button block onClick={this.login.bind(this)}>去登录吧</Button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         )
-
     }
 }
+
+export default withRouter(AccountStatus);

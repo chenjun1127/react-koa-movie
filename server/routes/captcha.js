@@ -10,10 +10,10 @@ router.get('/captcha', async (ctx) => {
         fontSize: 40,
         width: 150,
         height: 32,
-    })
+    });
     ctx.session.code = captcha.text;
     ctx.response.type = 'image/svg+xml';
     ctx.body = captcha.data;
-})
+});
 
 module.exports = router;

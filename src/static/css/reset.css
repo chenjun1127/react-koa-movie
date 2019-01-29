@@ -65,3 +65,4 @@ input:-webkit-autofill {
    fill: currentColor;
    overflow: hidden;
 }
+html,body{height: 100%}

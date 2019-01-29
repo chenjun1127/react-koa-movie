@@ -15,7 +15,7 @@ const sessionMysqlConfig = {
     password: config.database.PASSWORD,
     database: config.database.DATABASE,
     host: config.database.HOST,
-}
+};
 
 const THIRTY_MINTUES = 30 * 60 * 1000;
 app.keys = ['USER_SID', 'some secret hurr'];
@@ -32,13 +32,16 @@ const user = require('./routes/user');
 const cities = require('./routes/cities');
 const movies = require('./routes/movies');
 const comment = require('./routes/comment');
+const collect = require('./routes/collect');
+const main = require('./routes/main');
 app.context.author = 'Jone-chen';
 app.use(captcha.routes());
 app.use(user.routes());
 app.use(cities.routes());
 app.use(movies.routes());
 app.use(comment.routes());
-
+app.use(collect.routes());
+app.use(main.routes());
 app.listen(port, () => {
     console.log('app running on port: ' + port);
 });

@@ -3,62 +3,82 @@
  */
 
 const router = require('koa-router')();
-const { sequelize } = require("../db");
+const {sequelize} = require("../db");
 const Comment = sequelize.import("../models/comment");
 const User = sequelize.import("../models/user");
 const Praise = sequelize.import("../models/praise");
+const Movie = sequelize.import("../models/movie");
 const dayjs = require('dayjs');
 // 评论
-router.post('/comment', async(ctx) => {
-    const { userId } = ctx.request.body;
+router.post('/comment', async (ctx) => {
+    const {userId, movieId} = ctx.request.body;
     const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
-    await Comment.create(Object.assign({}, ctx.request.body, { createTime, user_id: userId })).then(() => {
-        ctx.body = {
-            code: 200
-        }
-    }).catch(err => {
-        ctx.body = {
-            code: 500,
-            desc: err.message
-        }
-    })
-});
-// 点赞，一个电影每个用户只能点赞一次
-router.get('/comment/praise', async(ctx) => {
-    const { commentId, userId, movieId } = ctx.request.query;
-    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
-    await Praise.findOne({ where: { comment_id: commentId, user_id: userId } }).then(async praise => {
-        if (!praise) {
-            // console.log("没有找到用户" + userId + '的赞')
-            await Praise.create({ movieId, createTime, user_id: userId, comment_id: commentId });
-            await Comment.findById(commentId).then(async comment => {
-                let count = comment.count;
-                count += 1;
-                await Comment.update({ status: 1, count }, { where: { id: commentId } }).then(res => {
-                    ctx.body = {
-                        code: 200
-                    }
-                })
+    await Movie.findOne({where: {movieId: movieId}}).then(async movie => {
+        if (movie) {
+            await Comment.create(Object.assign({}, ctx.request.body, {createTime, user_id: userId, m_id: movie.id})).then(() => {
+                ctx.body = {
+                    code: 200
+                }
+            }).catch(err => {
+                ctx.body = {
+                    code: 500,
+                    desc: err.message
+                }
             })
         } else {
-            // console.log("有找到用户" + userId + '的赞')
-            await Comment.findById(commentId).then(async comment => {
-                let count = comment.count;
-                count -= 1;
-                await Comment.update({ status: 0, count }, { where: { id: commentId } });
-                await Praise.destroy({ where: { comment_id: commentId, user_id: userId } }).then(res => {
-                    ctx.body = {
-                        code: 200
-                    }
-                })
-            });
+            ctx.body = {
+                code: 500,
+                data: '电影数据获取失败'
+            }
         }
-    })
+    });
+});
+// 点赞，一个电影每个用户只能点赞一次
+router.get('/comment/praise', async (ctx) => {
+    const {commentId, userId, movieId} = ctx.request.query;
+    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    await Movie.findOne({where: {movieId: movieId}}).then(async movie => {
+        if (movie) {
+            await Praise.findOne({where: {comment_id: commentId, user_id: userId, movieId}}).then(async praise => {
+                if (!praise) {
+                    // console.log("没有找到用户" + userId + '的赞')
+                    await Praise.create({movieId, createTime, user_id: userId, comment_id: commentId, m_id: movie.id});
+                    await Comment.findById(commentId).then(async comment => {
+                        let count = comment.count;
+                        count += 1;
+                        await Comment.update({status: 1, count}, {where: {id: commentId}}).then(() => {
+                            ctx.body = {
+                                code: 200
+                            }
+                        })
+                    })
+                } else {
+                    // console.log("有找到用户" + userId + '的赞')
+                    await Comment.findById(commentId).then(async comment => {
+                        let count = comment.count;
+                        count -= 1;
+                        await Comment.update({status: 0, count}, {where: {id: commentId}});
+                        await Praise.destroy({where: {comment_id: commentId, user_id: userId}}).then(() => {
+                            ctx.body = {
+                                code: 200
+                            }
+                        })
+                    });
+                }
+            })
+        } else {
+            ctx.body = {
+                code: 500,
+                data: '电影数据获取失败'
+            }
+        }
+    });
 });
 // 获取所有评论
-router.get('/comment/all', async(ctx) => {
+router.get('/comment/all', async (ctx) => {
+    const {pageNo, pageSize, movieId} = ctx.request.query;
     await Comment.findAll({
-        where: { movieId: ctx.request.query.movieId },
+        where: {movieId},
         include: [{
             model: User,
             attributes: ['name', 'avatar', 'id']
@@ -67,13 +87,15 @@ router.get('/comment/all', async(ctx) => {
         }],
         order: [
             ['create_time', 'DESC'] // 降序
-        ]
+        ],
+        offset: parseInt(((pageNo || 1) - 1) * (pageSize || 10)),
+        limit: parseInt(pageSize || 10)
     }).then(res => {
         ctx.body = {
             code: 200,
             data: res
         }
     })
-})
+});
 
 module.exports = router;
