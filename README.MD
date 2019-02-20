@@ -1,4 +1,4 @@
-## react-koa-project
+## React-koa-project
 
 react+mobx+koa+sequelize(mysql) 开发的网站，前端采用react全家桶，后端使用koa服务，数据库为mysql
 
@@ -11,11 +11,11 @@ npm run server
 npm run dev
 ```
 
-### develop environment
+### Develop environment
 ```bash
 npm run dev
 ```
-### production environment
+### Production environment
 ```bash
 npm run build
 ```
