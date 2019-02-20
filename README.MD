@@ -1,4 +1,6 @@
-### new-react-project（加入高阶组件）
+### react-koa-project
+
+react+koa+mysql 开发的网站，
 
 ```bash
 git clone git@github.com:chenjun1127/react-new-project.git
