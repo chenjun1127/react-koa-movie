@@ -1,6 +1,6 @@
-### react-koa-project
+## react-koa-project
 
-react+koa+mysql 开发的网站，
+react+mobx+koa+sequelize(mysql) 开发的网站
 
 ```bash
 git clone git@github.com:chenjun1127/react-new-project.git
@@ -17,6 +17,7 @@ npm run dev
 npm run build
 ```
 
+参考资料：
 
 https://blog.csdn.net/frank_come/article/details/80805032
 
