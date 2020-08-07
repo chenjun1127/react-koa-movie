@@ -5,12 +5,11 @@ const router = require('koa-router')();
 const API = require('../API/config.js');
 const koa2Req = require('koa2-request');
 const cheerio = require('cheerio');
-const {sequelize} = require("../db");
+const { sequelize } = require("../db");
 const Movie = sequelize.import("../models/movie");
-const dayjs = require('dayjs');
 router.get('/movies/hot', async (ctx) => {
     const locationId = ctx.query.locationId;
-    const res = await koa2Req(API.moviesHot + '?locationId=' + locationId, {json: true});
+    const res = await koa2Req(API.moviesHot + '?locationId=' + locationId, { json: true });
     ctx.body = {
         code: 200,
         data: res.body
@@ -19,7 +18,7 @@ router.get('/movies/hot', async (ctx) => {
 
 router.get('/movies/coming', async (ctx) => {
     const locationId = ctx.query.locationId;
-    const res = await koa2Req(API.moviesCome + '?locationId=' + locationId, {json: true});
+    const res = await koa2Req(API.moviesCome + '?locationId=' + locationId, { json: true });
     ctx.body = {
         code: 200,
         data: res.body
@@ -32,30 +31,23 @@ router.get('/movies/featureMovies', async (ctx) => {
     const list = $(".mlist").find("ul").children();
     const dataArr = [];
     let api_host = '';
-    list.each((index, item) => {
-        var smallArr = [], total = 0;
-        const dt = $(item).find('dt');
-        const img = dt.find('img');
-        const a = dt.find('a');
+    list.each((i, item) => {
+        const img = $(item).find('img');
+        const a = $(item).find('a');
         const text = img.attr('alt');
         const bigImg = img.data('src');
-        const dd = $(item).find('dd');
         const link = a.attr('href');
         const f = link.search(/\d/);
         const t = link.lastIndexOf('.');
         api_host = link.substr(0, f);
         const id = link.substring(f, t);
-        dd.each((i, t) => {
-            if (i === dd.length - 1) total = $(t).find('i').text();
-            smallArr.push($(t).find('img').data('src'));
-        });
         dataArr.push({
             bigImg,
             text,
-            smallImg: smallArr,
             link,
             feature_id: parseInt(id),
-            total: parseInt(total)
+            total: $(item).find('h3').find('span').text(),
+            index: i
         });
     });
     ctx.session.api_host = api_host;
@@ -67,7 +59,7 @@ router.get('/movies/featureMovies', async (ctx) => {
 });
 
 router.get('/movies/feature', async (ctx) => {
-    const {feature_id, page} = ctx.query;
+    const { feature_id, page } = ctx.query;
     const api_host = ctx.session.api_host;
     if (api_host) {
         ctx.body = {
@@ -105,14 +97,14 @@ router.get('/movies/feature', async (ctx) => {
             actorDom.each((i, t) => {
                 actors.push($(t).text())
             });
-            list.push({img, title, director, actors, content, movieId})
+            list.push({ img, title, director, actors, content, movieId })
         });
-        return {mainTitle, desc, list, pagerSlide}
+        return { mainTitle, desc, list, pagerSlide }
     }
 });
 
 router.get('/movies/award', async (ctx) => {
-    const {url, page} = ctx.query;
+    const { url, page } = ctx.query;
     const newUrl = parseInt(page) > 1 ? `http://award.mtime.com${url}index-${page}.html` : `http://award.mtime.com${url}`;
     if (newUrl) {
         ctx.body = {
@@ -149,17 +141,17 @@ router.get('/movies/award', async (ctx) => {
             });
             list.push({
                 awardTitle: mainTitleArr[i],
-                win: {title, img, movieId},
+                win: { title, img, movieId },
                 nominee: subList
             })
         });
-        return {mainTitle, list, totalPage: $(".pagenav a").length - 2}
+        return { mainTitle, list, totalPage: $(".pagenav a").length - 2 }
     }
 });
 // 电影详情
 router.get('/movies/detail', async (ctx) => {
-    const {movieId, locationId} = ctx.query;
-    const res = await koa2Req(`${API.moviesDetail}?locationId=${locationId}&movieId=${movieId}`, {json: true});
+    const { movieId, locationId } = ctx.query;
+    const res = await koa2Req(`${API.moviesDetail}?locationId=${locationId}&movieId=${movieId}`, { json: true });
     ctx.body = {
         code: 200,
         data: res.body
@@ -167,16 +159,14 @@ router.get('/movies/detail', async (ctx) => {
 });
 // 电影保存
 router.post('/movies/save', async (ctx) => {
-    const {movieId} = ctx.request.body;
-    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
-    await Movie.findOne({where: {movieId}}).then(async movie => {
+    const { movieId } = ctx.request.body;
+    await Movie.findOne({ where: { movieId } }).then(async movie => {
         if (!movie) {
-            await Movie.create(Object.assign({}, ctx.request.body, {createTime})).then(() => {
-                    ctx.body = {
-                        code: 200
-                    }
+            await Movie.create(Object.assign({}, ctx.request.body)).then(() => {
+                ctx.body = {
+                    code: 200
                 }
-            ).catch(err => {
+            }).catch(err => {
                 ctx.body = {
                     code: 500,
                     data: err.message

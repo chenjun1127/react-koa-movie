@@ -22,8 +22,6 @@ class UserInfo extends React.Component {
         e.preventDefault();
         this.props.form.validateFields((err, values) => {
             if (!err) {
-                console.log('Received values of form: ', values, this.file);
-                console.log(this.props.userInfo.info.avatar);
                 let formData = new FormData();
                 let avatar = this.props.userInfo.info.avatar;
                 if (avatar) formData.append('avatar', avatar);
@@ -102,12 +100,12 @@ class UserInfo extends React.Component {
                             <Form onSubmit={this.handleSubmit} className="login-form">
                                 <div className="headPic uploadPic">
                                     <img ref="imgPreview" src={avatar ? require(`../../static/uploads/${avatar}`) : require('../../static/images/default-head.png')}/>
-                                    {
+                                    {/* {
                                         process.env.NODE_ENV ?
                                             <span>
                                         修改头像<input type="file" id="uploadPic" name="file" accept="image/png,image/gif,image/jpeg" onChange={this.getFile.bind(this)}/>
                                         </span> : null
-                                    }
+                                    } */}
                                 </div>
                                 <div className="userInfo tc">
                                     <p>{name}</p>
@@ -155,7 +153,7 @@ class UserInfo extends React.Component {
                                         rules: [{required: false}],
                                         initialValue: userSign && userSign!=='null' ? userSign:''
                                     })(
-                                        <TextArea autosize={{minRows: 3, maxRows: 8}}/>
+                                        <TextArea autoSize={{minRows: 3, maxRows: 8}}/>
                                     )}
                                 </FormItem>
                                 <FormItem {...tailFormItemLayout}>

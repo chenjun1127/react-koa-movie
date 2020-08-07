@@ -1,8 +1,9 @@
 /**
  * Created by ChenJun on 2019/1/3
  */
-
-module.exports = function (sequelize, DataTypes) {
+const dayjs = require('dayjs');
+const Sequelize = require('sequelize');
+module.exports = function(sequelize, DataTypes) {
     return sequelize.define("praise", {
         id: {
             type: DataTypes.INTEGER,
@@ -15,12 +16,15 @@ module.exports = function (sequelize, DataTypes) {
             field: "movie_id",
             allowNull: false
         },
-        createTime:{
-            type: DataTypes.STRING,
+        createTime: {
+            type: Sequelize.DATE,
             field: "create_time",
-            allowNull: false
+            defaultValue: Sequelize.NOW,
+            get() {
+                return dayjs(this.getDataValue('createTime')).format('YYYY-MM-DD HH:mm:ss');
+            }
         }
-    },{
+    }, {
         underscored: true, //额外字段以下划线来分割
         // createdAt: "created_at",
         // updatedAt: "updated_at",

@@ -1,15 +1,15 @@
 {
-  "name": "react-koa-project",
+  "name": "react-koa-movie",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "server": "node ./server/app.js",
-    "dev": "webpack-dev-server --mode=development  --progress --open --hot",
+    "start": "webpack-dev-server --mode=development  --progress --open --hot",
     "build": "rimraf dist && webpack --progress --config webpack.prod.js"
   },
-  "keywords": [],
+  "keywords": ["react","koa","movie"],
   "author": "chenjun",
   "license": "ISC",
   "devDependencies": {

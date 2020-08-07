@@ -102,7 +102,7 @@ class NormalLoginForm extends React.Component {
                     })(
                         <Checkbox>记住我</Checkbox>
                     )}
-                    <a className="login-form-forgot" href="javascript:void(0)" onClick={this.handleForgot.bind(this)}>忘记密码</a>
+                    <a className="login-form-forgot" onClick={this.handleForgot.bind(this)}>忘记密码</a>
                 </FormItem>
                 <FormItem>
                     <Button block type="primary" htmlType="submit" className="login-form-button">

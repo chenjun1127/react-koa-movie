@@ -3,19 +3,17 @@
  */
 
 const router = require('koa-router')();
-const {sequelize} = require("../db");
+const { sequelize } = require("../db");
 const Comment = sequelize.import("../models/comment");
 const User = sequelize.import("../models/user");
 const Praise = sequelize.import("../models/praise");
 const Movie = sequelize.import("../models/movie");
-const dayjs = require('dayjs');
 // 评论
 router.post('/comment', async (ctx) => {
-    const {userId, movieId} = ctx.request.body;
-    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
-    await Movie.findOne({where: {movieId: movieId}}).then(async movie => {
+    const { userId, movieId } = ctx.request.body;
+    await Movie.findOne({ where: { movieId: movieId } }).then(async movie => {
         if (movie) {
-            await Comment.create(Object.assign({}, ctx.request.body, {createTime, user_id: userId, m_id: movie.id})).then(() => {
+            await Comment.create(Object.assign({}, ctx.request.body, { user_id: userId, m_id: movie.id })).then(() => {
                 ctx.body = {
                     code: 200
                 }
@@ -35,30 +33,20 @@ router.post('/comment', async (ctx) => {
 });
 // 点赞，一个电影每个用户只能点赞一次
 router.get('/comment/praise', async (ctx) => {
-    const {commentId, userId, movieId} = ctx.request.query;
-    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
-    await Movie.findOne({where: {movieId: movieId}}).then(async movie => {
+    const { commentId, userId, movieId } = ctx.request.query;
+    await Movie.findOne({ where: { movieId: movieId } }).then(async movie => {
         if (movie) {
-            await Praise.findOne({where: {comment_id: commentId, user_id: userId, movieId}}).then(async praise => {
+            await Praise.findOne({ where: { comment_id: commentId, user_id: userId, movieId } }).then(async praise => {
                 if (!praise) {
                     // console.log("没有找到用户" + userId + '的赞')
-                    await Praise.create({movieId, createTime, user_id: userId, comment_id: commentId, m_id: movie.id});
-                    await Comment.findById(commentId).then(async comment => {
-                        let count = comment.count;
-                        count += 1;
-                        await Comment.update({status: 1, count}, {where: {id: commentId}}).then(() => {
-                            ctx.body = {
-                                code: 200
-                            }
-                        })
-                    })
+                    await Praise.create({ movieId, userId: userId, commentId: commentId, m_id: movie.id });
+                    ctx.body = {
+                        code: 200
+                    }
                 } else {
                     // console.log("有找到用户" + userId + '的赞')
-                    await Comment.findById(commentId).then(async comment => {
-                        let count = comment.count;
-                        count -= 1;
-                        await Comment.update({status: 0, count}, {where: {id: commentId}});
-                        await Praise.destroy({where: {comment_id: commentId, user_id: userId}}).then(() => {
+                    await Comment.findByPk(commentId).then(async comment => {
+                        await Praise.destroy({ where: { commentId: commentId, user_id: userId } }).then(() => {
                             ctx.body = {
                                 code: 200
                             }
@@ -76,9 +64,9 @@ router.get('/comment/praise', async (ctx) => {
 });
 // 获取所有评论
 router.get('/comment/all', async (ctx) => {
-    const {pageNo, pageSize, movieId} = ctx.request.query;
+    const { pageNo, pageSize, movieId } = ctx.request.query;
     await Comment.findAll({
-        where: {movieId},
+        where: { movieId },
         include: [{
             model: User,
             attributes: ['name', 'avatar', 'id']

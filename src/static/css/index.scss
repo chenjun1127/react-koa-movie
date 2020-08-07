@@ -32,7 +32,8 @@ $contentWidth: 1200px;
         width: $contentWidth;
         margin: 0 auto;
 
-        .userBox a, .userBox button {
+        .userBox a,
+        .userBox button {
             margin-right: 10px;
         }
 
@@ -107,7 +108,7 @@ $contentWidth: 1200px;
     transform: translate(-50%, 0);
     @media only screen and (min-width: 1000px) {
         width: 600px;
-        top: 18%
+        top: 18%;
     }
 
     .card-title {
@@ -141,7 +142,7 @@ $contentWidth: 1200px;
 
 .forgotTips {
     em {
-        color: $blurColor
+        color: $blurColor;
     }
 }
 
@@ -153,7 +154,7 @@ $contentWidth: 1200px;
     padding-top: 20px;
 
     p {
-        word-break: break-all
+        word-break: break-all;
     }
 }
 
@@ -208,12 +209,12 @@ $contentWidth: 1200px;
     border-radius: 50%;
 
     img {
-        border: none
+        border: none;
     }
 
     span {
         position: absolute;
-        background: rgba(0, 0, 0, .6);
+        background: rgba(0, 0, 0, 0.6);
         height: 32px;
         line-height: 32px;
         text-align: center;
@@ -231,7 +232,7 @@ $contentWidth: 1200px;
 }
 
 .tc {
-    text-align: center
+    text-align: center;
 }
 
 .userInfo {
@@ -293,7 +294,7 @@ $contentWidth: 1200px;
 .list {
     ul li {
         border-bottom: 1px solid #d9d9d9;
-        padding: 12px 0
+        padding: 12px 0;
     }
 }
 
@@ -305,7 +306,7 @@ $contentWidth: 1200px;
     width: 100%;
     opacity: 0;
     cursor: pointer;
-    height: 100%
+    height: 100%;
 }
 
 .mainInner {
@@ -369,14 +370,13 @@ $contentWidth: 1200px;
     p {
         margin: 0 0 5px;
         display: block;
-        clear: both
+        clear: both;
     }
 }
 
-
 .movies-img {
     height: 360px;
-    width: 100%
+    width: 100%;
 }
 
 .movies-score {
@@ -414,15 +414,13 @@ $contentWidth: 1200px;
         width: 100%;
         cursor: pointer;
     }
-
 }
 
 .carousel-box {
     padding: 20px 10px;
 }
 
-
-.movies-list li {;
+.movies-list li {
     float: left;
     width: 25%;
     box-sizing: border-box;
@@ -483,11 +481,11 @@ $contentWidth: 1200px;
     left: 21px;
     display: block;
     top: 11px;
-    background: url("../../static/images/allicon24.png") no-repeat -160px -344px;
+    background: url('../../static/images/allicon24.png') no-repeat -160px -344px;
 }
 
 .movies-icon-1 {
-    background-position: -160px -272px;;
+    background-position: -160px -272px;
 }
 
 .loading {
@@ -499,7 +497,7 @@ $contentWidth: 1200px;
     span {
         display: block;
         text-align: center;
-        color: rgba(0, 0, 0, .4);
+        color: rgba(0, 0, 0, 0.4);
         margin-top: -10px;
     }
 }
@@ -520,18 +518,18 @@ $contentWidth: 1200px;
     text-align: center;
     padding: 10px 0;
 
-    a {
+    span {
         background: #fff;
         border-radius: 25px;
         padding: 6px 10px;
-        color: #1890FF;
+        color: #1890ff;
         display: inline-block;
         width: 120px;
         transition: all 0.2s;
-        border: 1px solid #1890FF;
-
+        border: 1px solid #1890ff;
+        cursor: pointer;
         &:hover {
-            background: #40A9FF;
+            background: #40a9ff;
             color: #fff;
         }
     }
@@ -547,13 +545,54 @@ $contentWidth: 1200px;
 
 .feature-movies {
     padding: 10px 20px;
+    padding-bottom: 0;
+    .fm-list {
+        cursor: pointer;
+        position: relative;
+        float: left;
+        width: 280px;
+        height: 160px;
+        margin-right: 20px;
+        margin-bottom: 20px;
+        overflow: hidden;
+        &:first-child {
+            width: 560px;
+            height: 340px;
+            img {
+                height: 340px;
+            }
+            .f-title span {
+                font-size: 50px;
+            }
+        }
+        &:nth-of-type(3),
+        &:nth-of-type(5) {
+            margin-right: 0;
+        }
+        .f-title {
+            background: linear-gradient(rgba(255, 255, 255, 0), rgba(0, 0, 0, 0.7));
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            font-size: 16px;
+            line-height: 1.4;
+            font-weight: 400;
+            padding-left: 20px;
+            text-align: left;
+            color: #fff;
+            span {
+                font-size: 30px;
+            }
+        }
+    }
 }
 
 .m-pic {
     margin: 0;
 
     * {
-        margin: 0
+        margin: 0;
     }
 
     dt {
@@ -588,7 +627,7 @@ $contentWidth: 1200px;
             width: 100%;
             height: 126px;
             text-align: center;
-            background: rgba(0, 0, 0, .6);
+            background: rgba(0, 0, 0, 0.6);
             color: #fff;
             line-height: 126px;
             transition: all 0.2s ease-in-out 0s;
@@ -599,17 +638,16 @@ $contentWidth: 1200px;
         }
 
         &:hover strong {
-            background: rgba(0, 0, 0, .4);
+            background: rgba(0, 0, 0, 0.4);
         }
     }
-
 }
 
 .f-title {
     text-align: center;
     font-size: 16px;
     padding: 5px;
-    color: rgba(0, 0, 0, .65);
+    color: rgba(0, 0, 0, 0.65);
 }
 
 .main-title {
@@ -649,15 +687,15 @@ $contentWidth: 1200px;
     }
 
     .color-1 {
-        background: #f85223
+        background: #f85223;
     }
 
     .color-2 {
-        background: #ff9600
+        background: #ff9600;
     }
 
     .color-3 {
-        background: $blurColor
+        background: $blurColor;
     }
 
     .list-con {
@@ -689,8 +727,9 @@ $contentWidth: 1200px;
                 }
             }
 
-            .actors, .director {
-                padding: 1px 0
+            .actors,
+            .director {
+                padding: 1px 0;
             }
 
             .director {
@@ -710,7 +749,8 @@ $contentWidth: 1200px;
     margin-left: 20px;
     border-left: 1px solid #e6d8d8;
 
-    dt, dd {
+    dt,
+    dd {
         h1 {
             font-size: 16px;
             margin-bottom: 0;
@@ -750,7 +790,6 @@ $contentWidth: 1200px;
 
     dt div a {
         width: 100%;
-
     }
 }
 
@@ -761,7 +800,7 @@ $contentWidth: 1200px;
 }
 
 .feature-tabs > div {
-    margin-bottom: 0
+    margin-bottom: 0;
 }
 
 .main-movies-img {
@@ -778,7 +817,7 @@ $contentWidth: 1200px;
         left: 7.5px;
         top: 0;
         z-index: 3;
-        background: rgba(0, 0, 0, .5);
+        background: rgba(0, 0, 0, 0.5);
         width: calc(100% - 15px);
         height: 100%;
         transform: translateY(-100%);
@@ -788,7 +827,7 @@ $contentWidth: 1200px;
         justify-content: center;
 
         svg {
-            fill: rgba(255, 255, 255, .8);
+            fill: rgba(255, 255, 255, 0.8);
             width: 60px;
             height: 60px;
             cursor: pointer;
@@ -796,7 +835,7 @@ $contentWidth: 1200px;
         }
 
         .active {
-            fill: rgba(245, 85, 85, .8);
+            fill: rgba(245, 85, 85, 0.8);
             transform: scale(1.2);
         }
     }
@@ -820,7 +859,7 @@ $contentWidth: 1200px;
 
 .m-title-3 {
     padding: 5px 8px;
-    background: rgba(0, 0, 0, .8);
+    background: rgba(0, 0, 0, 0.8);
     color: #fff;
     border-radius: 5px;
     display: inline-block;
@@ -828,7 +867,7 @@ $contentWidth: 1200px;
 }
 
 .m-title {
-    line-height: 1.9
+    line-height: 1.9;
 }
 
 .summary {
@@ -867,7 +906,7 @@ ul.img-list {
             background-size: cover;
 
             img {
-                visibility: hidden
+                visibility: hidden;
             }
         }
 
@@ -875,12 +914,10 @@ ul.img-list {
             margin-right: 0;
         }
     }
-
 }
 
-
 .light-box-mask {
-    background: rgba(0, 0, 0, .65);
+    background: rgba(0, 0, 0, 0.65);
     width: 100%;
     height: 100%;
     position: fixed;
@@ -894,7 +931,7 @@ ul.img-list {
     &.show {
         visibility: visible;
         opacity: 1;
-        transition: all 0.2s ease-in-out .15s;
+        transition: all 0.2s ease-in-out 0.15s;
     }
 }
 
@@ -903,33 +940,25 @@ ul.img-list {
     position: relative;
     height: 100%;
 
-    .prev, .next {
+    .prev,
+    .next {
         position: absolute;
         z-index: 1;
         top: 50%;
         transform: translateY(-50%);
         cursor: pointer;
         color: #fff;
-
-        svg {
-            font-size: 10px;
-            width: 45px;
-            height: 45px;
-            fill: #e8e8e8;
-            transition: all 0.2s;
-        }
-
-        &:hover svg {
-            fill: #b6b6b6;
-        }
+        font-size: 50px;
+        font-family: simsun;
+        font-weight: bold;
     }
 
     .prev {
-        left: 30px;
+        left: 50px;
     }
 
     .next {
-        right: 30px;
+        right: 50px;
     }
 
     ol {
@@ -990,7 +1019,7 @@ ul.img-list {
     cursor: pointer;
 
     &:hover {
-        background: #b6b6b6
+        background: #b6b6b6;
     }
 }
 
@@ -1003,7 +1032,6 @@ ul.img-list {
 
 .comment-list {
     display: flex;
-
 
     .comment-avatar {
         margin-right: 12px;
@@ -1024,9 +1052,8 @@ ul.img-list {
             padding-top: 15px;
 
             span {
-                color: $blurColor
+                color: $blurColor;
             }
-
         }
 
         .comment-support {
@@ -1045,17 +1072,18 @@ ul.img-list {
             }
 
             .isSupport {
-                fill: red
+                fill: red;
             }
 
             span {
                 margin-left: 5px;
                 cursor: pointer;
             }
+            &:hover {
+                fill: red;
+            }
         }
     }
-
-
 }
 
 .comment-editor {
@@ -1127,7 +1155,6 @@ ul.img-list {
                     display: flex;
                     align-items: center;
 
-
                     svg.comment {
                         fill: #888;
                         width: 16px;
@@ -1173,7 +1200,10 @@ ul.img-list {
         }
 
         img {
-            width: 60px;height: 60px;border-radius: 50%;overflow: hidden;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            overflow: hidden;
         }
 
         div {
@@ -1183,8 +1213,19 @@ ul.img-list {
             padding: 0 15px;
             flex-direction: column;
             justify-content: center;
+            h1 {
+                span {
+                    border: 1px solid #d56b97;
+                    color: #d56b97;
+                    font-size: 12px;
+                    padding: 1px 6px;
+                    border-radius: 10px;
+                }
+            }
 
-            p {margin-bottom: 0}
+            p {
+                margin-bottom: 0;
+            }
         }
     }
 }

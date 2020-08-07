@@ -1,7 +1,8 @@
 /**
  * Created by ChenJun on 2019/1/21
  */
-
+const dayjs = require('dayjs');
+const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define("collect", {
         id: {
@@ -22,13 +23,21 @@ module.exports = function(sequelize, DataTypes) {
             defaultValue: 0
         },
         createTime: {
-            type: DataTypes.STRING,
+            type: Sequelize.DATE,
             field: "create_time",
+            defaultValue: Sequelize.NOW,
+            get() {
+                return dayjs(this.getDataValue('createTime')).format('YYYY-MM-DD HH:mm:ss');
+            }
+        },
+        userId: {
+            type: DataTypes.INTEGER,
+            field: "user_id",
             allowNull: false
         }
-    },{
+    }, {
         underscored: true,
         timestamps: false,
-        comment:'收藏表'
+        comment: '收藏表'
     })
 };

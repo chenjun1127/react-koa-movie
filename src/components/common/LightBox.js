@@ -54,17 +54,13 @@ export default class LightBox extends React.Component {
                         {
                             !loop && index === 0 ? null :
                                 <span className="prev" onClick={this.handlePrev.bind(this, index)}>
-                                    <svg>
-                                        <use xlinkHref={`#icon-arrow-l`}/>
-                                    </svg>
+                                    &lt;
                                 </span>
                         }
                         {
                             !loop && index === images.length - 1 ? null :
                                 <span className="next" onClick={this.handleNext.bind(this, index)}>
-                                    <svg>
-                                        <use xlinkHref={`#icon-arrow-r`}/>
-                                    </svg>
+                                    &gt;
                                 </span>
                         }
                     </li>
@@ -89,7 +85,7 @@ export default class LightBox extends React.Component {
                 {
                     this.props.images.map((item, index) => {
                         return (
-                            <li key={index}><a href="javascript:void(0)" onClick={this.handleClick.bind(this, index)} style={{backgroundImage: `url(${item.imgUrl})`}}><img
+                            <li key={index}><a onClick={this.handleClick.bind(this, index)} style={{backgroundImage: `url(${item.imgUrl})`}}><img
                                 src={item.imgUrl}/></a></li>
                         )
                     })

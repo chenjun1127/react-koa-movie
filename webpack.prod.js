@@ -49,7 +49,7 @@ module.exports = {
             filename: 'css/[name].[chunkhash].css'
         }),
         new HtmlWebpackPlugin({
-            title: 'demo',
+            title: 'react-movie',
             template: './templates/index.html',
             favicon: './src/static/images/favicon.ico',
             inject: 'body'

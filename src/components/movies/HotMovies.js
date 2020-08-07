@@ -47,7 +47,7 @@ export default class HotMovies extends React.Component {
                         {list}
                     </Carousel>
                     <div className="movies-more">
-                        <a href="javascript:void(0);" onClick={this.handleNavigator.bind(this)}>查看更多>></a>
+                        <span onClick={this.handleNavigator.bind(this)}>查看更多>></span>
                     </div>
                 </div>
             )

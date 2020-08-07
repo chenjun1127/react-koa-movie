@@ -40,7 +40,7 @@ module.exports = {
     },
     plugins: [
         new HtmlWebpackPlugin({
-            title: 'demo',
+            title: 'react-movie',
             template: './templates/index.html',
             favicon: './src/static/images/favicon.ico',
             inject: 'body'
@@ -59,7 +59,7 @@ module.exports = {
         port: 4000,
         proxy: {
             '/api': {
-                target: 'http://localhost:5000',
+                target: 'http://localhost:5190',
                 changeOrigin:true,
                 pathRewrite: {"^/api" : ""}
             }

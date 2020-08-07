@@ -1,8 +1,9 @@
 /**
  * Created by ChenJun on 2019/1/2
  */
-
-module.exports = function (sequelize, DataTypes) {
+const dayjs = require('dayjs');
+const Sequelize = require('sequelize');
+module.exports = function(sequelize, DataTypes) {
     const User = sequelize.define("user", {
         id: {
             type: DataTypes.INTEGER,
@@ -47,10 +48,13 @@ module.exports = function (sequelize, DataTypes) {
             defaultValue: 0
         },
         createTime: {
-            type: DataTypes.STRING,
+            type: Sequelize.DATE,
             field: "create_time",
-            allowNull: false
-        }
+            defaultValue: Sequelize.NOW,
+            get() {
+                return dayjs(this.getDataValue('createTime')).format('YYYY-MM-DD HH:mm:ss');
+            }
+        },
     }, {
         underscored: true, //额外字段以下划线来分割
         // createdAt: "created_at",
@@ -62,24 +66,20 @@ module.exports = function (sequelize, DataTypes) {
 
     });
     //静态方法
-    User.getUserById = function (id) {
-        return this.findById(id)
+    User.getUserById = function(id) {
+        return this.findByPk(id);
     };
-    User.getUsers = function (options) {
+    User.getUsers = function(options) {
         return this.findAll(options);
     };
-    User.updateUserById = function (values, id) {
+    User.updateUserById = function(values, id) {
         return this.update(values, {
-            where: {
-                id: id
-            }
+            where: { id: id }
         });
     };
-    User.deleteById = function (id) {
+    User.deleteById = function(id) {
         return this.destroy({
-            where: {
-                id: id
-            }
+            where: { id: id }
         })
     };
     return User;

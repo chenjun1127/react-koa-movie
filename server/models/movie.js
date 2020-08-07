@@ -1,7 +1,8 @@
 /**
  * Created by ChenJun on 2019/1/22
  */
-
+const dayjs = require('dayjs');
+const Sequelize = require('sequelize');
 module.exports = function(sequelize, DataTypes) {
     return sequelize.define("movie", {
         id: {
@@ -31,9 +32,12 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         createTime: {
-            type: DataTypes.STRING,
+            type: Sequelize.DATE,
             field: "create_time",
-            allowNull: false
+            defaultValue: Sequelize.NOW,
+            get() {
+                return dayjs(this.getDataValue('createTime')).format('YYYY-MM-DD HH:mm:ss');
+            }
         }
     }, {
         underscored: true,

@@ -3,7 +3,6 @@
  */
 
 import React from 'react';
-import {axios} from 'axios';
 import {Carousel} from 'antd';
 
 export default class ComingMovies extends React.Component {
@@ -46,7 +45,7 @@ export default class ComingMovies extends React.Component {
                         {list}
                     </Carousel>
                     <div className="movies-more">
-                        <a href="javascript:void(0);" onClick={this.handleNavigator.bind(this)}>查看更多>></a>
+                        <span onClick={this.handleNavigator.bind(this)}>查看更多>></span>
                     </div>
                 </div>
             )

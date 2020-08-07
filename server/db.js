@@ -9,7 +9,8 @@ const sequelize = new Sequelize(config.database.DATABASE, config.database.USERNA
         max: 5,
         min: 0,
         idle: 10000
-    }
+    },
+    logging:false
 });
 
 //测试数据库链接

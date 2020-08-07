@@ -2,28 +2,27 @@
  * Created by ChenJun on 2018/12/4
  */
 const router = require('koa-router')();
-const dayjs = require('dayjs');
-const {validate, enbcrypt} = require('../utils/bcrypt');
+const { validate, enbcrypt } = require('../utils/bcrypt');
 const sendMail = require('../utils/sendMail');
 const sessionConfig = require('../session.config');
 const multer = require('koa-multer'); //加载koa-multer模块
-const {sequelize} = require("../db");
+const { sequelize } = require("../db");
 const User = sequelize.import("../models/user");
 //文件上传
 //配置
 const storage = multer.diskStorage({
     //文件保存路径
-    destination: function (req, file, cb) {
+    destination: function(req, file, cb) {
         cb(null, './src/static/uploads/')
     },
     //修改文件名称
-    filename: function (req, file, cb) {
+    filename: function(req, file, cb) {
         var fileFormat = (file.originalname).split(".");
         cb(null, Date.now() + "." + fileFormat[fileFormat.length - 1]);
     }
 });
 //加载配置
-const upload = multer({storage: storage});
+const upload = multer({ storage: storage });
 // 获取session状态
 router.get('/session', async (ctx) => {
     if (ctx.session.user) {
@@ -43,17 +42,16 @@ router.get('/session', async (ctx) => {
 });
 // 注册
 router.post('/user/signUp', async (ctx) => {
-    const {name, password, captcha} = ctx.request.body;
-    const createTime = dayjs().format('YYYY-MM-DD HH:mm:ss');
+    const { name, password, captcha } = ctx.request.body;
     if (captcha.toLowerCase() === ctx.session.code.toLowerCase()) {
-        await User.findOne({where: {name}}).then(async res => {
+        await User.findOne({ where: { name } }).then(async res => {
             if (res) {
                 ctx.body = {
                     code: 501,
                     desc: '用户已存在'
                 }
             } else {
-                const user = Object.assign({}, ctx.request.body, {password: await enbcrypt(password), createTime});
+                const user = Object.assign({}, ctx.request.body, { password: await enbcrypt(password) });
                 delete user.captcha;
                 await User.create(user).then(res => {
                     ctx.body = {
@@ -73,8 +71,8 @@ router.post('/user/signUp', async (ctx) => {
 });
 // 登录
 router.post('/user/signIn', async (ctx) => {
-    const {name, password, remember} = ctx.request.body;
-    await User.findOne({where: {name}}).then(async res => {
+    const { name, password, remember } = ctx.request.body;
+    await User.findOne({ where: { name } }).then(async res => {
         if (!res) {
             ctx.body = {
                 code: 502,
@@ -104,7 +102,7 @@ router.post('/user/signIn', async (ctx) => {
 });
 // 找回密码
 router.post('/user/getBackPassword', async (ctx) => {
-    const {name, email, captcha, time, url} = ctx.request.body;
+    const { name, email, captcha, time, url } = ctx.request.body;
     if (captcha.toLowerCase() === ctx.session.code.toLowerCase()) {
         // 同个账号10分钟之内禁止重复发邮件
         if (ctx.session.sendTime && ctx.session.userName && ctx.session.userName === name && ((time - ctx.session.sendTime) / 1000 / 60) < 10) {
@@ -114,7 +112,7 @@ router.post('/user/getBackPassword', async (ctx) => {
                 desc: '此邮箱找回密码确认邮件已发送，如未收到请10分钟后再试'
             }
         } else {
-            await User.findOne({where: {name}}).then(async res => {
+            await User.findOne({ where: { name } }).then(async res => {
                 if (!res) {
                     ctx.body = {
                         code: 502,
@@ -128,9 +126,9 @@ router.post('/user/getBackPassword', async (ctx) => {
                             ctx.session.sendTime = time;
                             ctx.session.userName = res.name;
                             ctx.session.sendEmailTime = Date.now(); // 邮件发送的时间，用户点邮件链接的时候，判断当前链接有没有过期
-                            ctx.body = {code: 200, desc: '发送邮件成功，请重新输入新密码', data: sendRes}
+                            ctx.body = { code: 200, desc: '发送邮件成功，请重新输入新密码', data: sendRes }
                         }).catch(err => {
-                            ctx.body = {code: 504, desc: '发送邮件失败，请联系管理员', msg: err.message}
+                            ctx.body = { code: 504, desc: '发送邮件失败，请联系管理员', msg: err.message }
                         })
                     } else {
                         ctx.body = {
@@ -176,15 +174,15 @@ router.get('/user/resetLink', async (ctx) => {
 });
 // 重置密码
 router.post('/user/restPassword', async (ctx) => {
-    const {newPassword, name} = ctx.request.body;
-    await User.findOne({where: {name}}).then(async res => {
+    const { newPassword, name } = ctx.request.body;
+    await User.findOne({ where: { name } }).then(async res => {
         if (!res) {
             ctx.body = {
                 code: 502,
                 desc: '用户不存在'
             }
         } else {
-            await User.update({password: await enbcrypt(newPassword)}, {where: {name}}).then(() => {
+            await User.update({ password: await enbcrypt(newPassword) }, { where: { name } }).then(() => {
                 ctx.body = {
                     code: 200,
                     desc: '重置密码成功'
@@ -202,19 +200,19 @@ router.post('/user/restPassword', async (ctx) => {
 });
 // 发送激活邮件
 router.post('/user/activeEmail', async (ctx) => {
-    const {name, email, url} = ctx.request.body;
+    const { name, email, url } = ctx.request.body;
     const href = url + '?name=' + encodeURIComponent(name) + '&type=activeAccount&t=' + Date.now();
     await sendMail(email, '账号激活', `<h3>${name}您好，</h3><p>请在 24 小时内点击此链接以完成激活（如链接无法点击，请复制链接浏览器打开）</p><p>${href}</p>`).then(sendRes => {
         ctx.session.sendActiveEmailTime = Date.now(); // 邮件发送的时间，用户点邮件链接的时候，判断当前链接有没有过期
         ctx.session.actvieUserName = name;
-        ctx.body = {code: 200, desc: '发送邮件成功，请点击链接激活账号', data: sendRes}
+        ctx.body = { code: 200, desc: '发送邮件成功，请点击链接激活账号', data: sendRes }
     }).catch(err => {
-        ctx.body = {code: 504, desc: '发送邮件失败，请联系管理员', msg: err.message}
+        ctx.body = { code: 504, desc: '发送邮件失败，请联系管理员', msg: err.message }
     })
 });
 // 激活账号
 router.post('/user/activeAccount', async (ctx) => {
-    const {name} = ctx.request.body;
+    const { name } = ctx.request.body;
     if (ctx.session.sendActiveEmailTime && ctx.session.actvieUserName === name) {
         const ms = Date.now() - ctx.session.sendActiveEmailTime;
         const leaveHours = Math.floor(ms / 1000 / 60 / 60);
@@ -224,14 +222,14 @@ router.post('/user/activeAccount', async (ctx) => {
                 desc: '链接错误或者已经失效'
             }
         } else {
-            await User.findOne({where: {name}}).then(async res => {
+            await User.findOne({ where: { name } }).then(async res => {
                 if (!res) {
                     ctx.body = {
                         code: 502,
                         desc: '用户不存在'
                     }
                 } else {
-                    await User.update({active: 1}, {where: {name}}).then(() => {
+                    await User.update({ active: 1 }, { where: { name } }).then(() => {
                         ctx.body = {
                             code: 200,
                             desc: '账号激活成功',
@@ -264,7 +262,7 @@ router.get('/user/signOut', async (ctx) => {
 });
 // 更新个人信息
 router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
-    let {name, email, userSign, sex, phone, avatar} = ctx.req.body;
+    let { name, email, userSign, sex, phone, avatar } = ctx.req.body;
     let _avatar;
     if (avatar) {
         _avatar = avatar;
@@ -276,9 +274,9 @@ router.post('/user/updateInfo', upload.single('file'), async (ctx) => {
         _avatar = null;
     }
     const sign = userSign && userSign !== "undefined" ? userSign : null;
-    await User.update({email, sex, phone, avatar: _avatar, userSign: sign}, {where: {name}});
+    await User.update({ email, sex, phone, avatar: _avatar, userSign: sign }, { where: { name } });
     // 更新之后，更新session
-    await User.findOne({where: {name}}).then(async res => {
+    await User.findOne({ where: { name } }).then(async res => {
         ctx.session.user = res.toJSON();
         ctx.body = {
             code: 200,

@@ -1,12 +1,12 @@
 const config = {
     // 数据库配置
     database: {
-        DATABASE: 'node_sql',
+        DATABASE: 'db_node_koa',
         USERNAME: 'root',
-        PASSWORD: 'cj123456',
+        PASSWORD: '123456',
         PORT: '3306',
-        HOST: 'localhost'
-    }
+        HOST: 'localhost',
+    },
 };
 
 module.exports = config;

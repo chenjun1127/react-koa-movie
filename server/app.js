@@ -6,7 +6,7 @@ const session = require('koa-session');
 const MysqlStore = require('koa-mysql-session');
 const koaBody = require('koa-body');
 const app = new Koa();
-const port = 5000;
+const port = 5190;
 require('./models/ref');
 app.use(koaBody());
 // session存储配置

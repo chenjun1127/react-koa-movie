@@ -2,32 +2,22 @@
  * Created by ChenJun on 2018/12/25
  */
 import React from 'react';
-import {List, Card} from 'antd';
 
 const FeatureMovies = (props) => {
-    const {featureMovies} = props;
-    if (!featureMovies) return null;
-    return (
-        <div className="feature-movies">
-            <List
-                grid={{gutter: 16, column: 2}}
-                dataSource={featureMovies}
-                renderItem={item => (
-                    <List.Item>
-                        <Card bodyStyle={{padding: '10px'}}>
-                            <a href="javascript:void(0)" onClick={() => { props.history.push(`${item.feature_id ? `/movies/feature/${item.feature_id}`:`/movies/award/1?url=${item.link.split('.com')[1]}`}`) }}>
-                                <dl className="m-pic clearfix">
-                                    <dt><img src={item.bigImg}/></dt>
-                                    {item.smallImg.map((t, i) => <dd key={i}><img src={t}/> {i === item.smallImg.length - 1 ? <strong><i>{item.total}</i>部电影>></strong> : null}
-                                    </dd>)}
-                                </dl>
-                                <div className="f-title">{item.text} </div>
-                            </a>
-                        </Card>
-                    </List.Item>
-                )}
-            />
+  const { featureMovies } = props;
+  if (!featureMovies) return null;
+  const renderFeatureMovies = () => {
+    return featureMovies.map((item) => {
+      return (
+        <div className="fm-list" key={item.feature_id} onClick={() => { props.history.push(`${item.feature_id ? `/movies/feature/${item.feature_id}` : `/movies/award/1?url=${item.link.split('.com')[1]}`}`);}}>
+          <div className="m-pic clearfix">
+              <img src={item.bigImg} />
+          </div>
+          <div className="f-title"><span>{item.total}</span>&nbsp;部 &nbsp;&nbsp;&nbsp;{item.text} </div>
         </div>
-    )
-}
+      );
+    });
+  };
+  return <div className="feature-movies clearfix">{renderFeatureMovies()}</div>;
+};
 export default FeatureMovies;
