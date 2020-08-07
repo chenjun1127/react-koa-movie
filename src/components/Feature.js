@@ -18,7 +18,7 @@ export default class Feature extends React.Component {
     }
 
     getFeatureMovies(page) {
-        axios.get(`/api/movies/feature?feature_id=${this.props.match.params.id}&page=${page}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/movies/feature?feature_id=${this.props.match.params.id}&page=${page}&t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 this.setState({data: res.data.data})
             }
@@ -87,7 +87,7 @@ class TabsContent extends React.Component {
     }
 
     getFeatureMovies(page) {
-        axios.get(`/api/movies/feature?feature_id=${this.props.match.params.id}&page=${page}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/movies/feature?feature_id=${this.props.match.params.id}&page=${page}&t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 this.setState({newData: res.data.data})
             }

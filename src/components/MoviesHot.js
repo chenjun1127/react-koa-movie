@@ -20,7 +20,7 @@ export default class MoviesHot extends React.Component {
 
     getMoviesHot() {
         const locObj = cookie.get('defaultCity') && JSON.parse(cookie.get('defaultCity'));
-        axios.get(`/api/movies/hot?locationId=${locObj.id}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/movies/hot?locationId=${locObj.id}&t=${Date.now()}`).then(res => {
             res.data.code === 200 && this.setState({hotMoviesData: res.data.data});
         })
     }

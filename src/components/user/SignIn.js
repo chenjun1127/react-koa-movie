@@ -26,7 +26,7 @@ class NormalLoginForm extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                axios.post('/api/user/signIn', {
+                axios.post('/koa-movie-api/user/signIn', {
                     name: values.userName,
                     password: values.password,
                     remember: values.remember

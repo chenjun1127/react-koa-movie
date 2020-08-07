@@ -20,7 +20,7 @@ class AccountStatus extends React.Component {
     }
 
     getActiveStatus(name) {
-        axios.post('/api/user/activeAccount', {name}).then(res => {
+        axios.post('/koa-movie-api/user/activeAccount', {name}).then(res => {
             if (res.data.code !== 200) {
                 this.setState({
                     isActive: false,

@@ -31,7 +31,7 @@ export default class Nav extends Component {
     }
 
     componentDidMount() {
-        axios.get(`/api/session?t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/session?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 let resData = res.data.data;
                 delete resData.password;
@@ -52,7 +52,7 @@ export default class Nav extends Component {
     }
 
     handleClickSignOut() {
-        axios.get(`/api/user/signOut?t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/user/signOut?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 this.props.userInfo.setInfo({});
                 sessionStorage.removeItem('movieId');

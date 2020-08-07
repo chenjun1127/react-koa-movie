@@ -58,10 +58,10 @@ module.exports = {
         contentBase: path.join(__dirname, "dist"),
         port: 4000,
         proxy: {
-            '/api': {
+            '/koa-movie-api': {
                 target: 'http://localhost:5190',
                 changeOrigin:true,
-                pathRewrite: {"^/api" : ""}
+                pathRewrite: {"^/koa-movie-api" : ""}
             }
         }
     },

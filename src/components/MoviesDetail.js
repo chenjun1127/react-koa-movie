@@ -25,7 +25,7 @@ export default class MoviesDetail extends React.Component {
     }
 
     getDetail(id, locationId) {
-        axios.get(`/api/movies/detail?movieId=${id}&locationId=${locationId}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/movies/detail?movieId=${id}&locationId=${locationId}&t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 const data = res.data.data.data.basic;
                 this.saveMovie(data);
@@ -35,7 +35,7 @@ export default class MoviesDetail extends React.Component {
     }
 
     saveMovie(data) {
-        axios.post('/api/movies/save', {
+        axios.post('/koa-movie-api/movies/save', {
             movieId: parseInt(this.props.match.params.id),
             movieName: data.name,
             movieImg: data.img,
@@ -56,7 +56,7 @@ export default class MoviesDetail extends React.Component {
             this.props.operate.setVisible(true);
             return;
         }
-        axios.post('/api/collect', {
+        axios.post('/koa-movie-api/collect', {
             movieId: parseInt(this.props.match.params.id),
             userId
         }).then(res => {

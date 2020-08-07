@@ -31,7 +31,7 @@ class Active extends React.Component {
     sendActiveEmail() {
         const {name, email, isActive} = this.props.userInfo.info;
         if (name && email && !isActive) {
-            axios.post('/api/user/activeEmail', {name: name, email, url: location.href + '_status'}).then(res => {
+            axios.post('/koa-movie-api/user/activeEmail', {name: name, email, url: location.href + '_status'}).then(res => {
                 if (res.data.code !== 200) {
                     this.setState({isSend: false})
                 }

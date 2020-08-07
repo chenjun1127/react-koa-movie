@@ -22,7 +22,7 @@ class NormalLoginForm extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 // console.log('Received values of form: ', values);
-                axios.post('/api/user/restPassword', {
+                axios.post('/koa-movie-api/user/restPassword', {
                     name: this.state.name,
                     newPassword: values.password,
                 }).then(res => {
@@ -42,7 +42,7 @@ class NormalLoginForm extends React.Component {
     }
 
     componentDidMount() {
-        axios.get('/api/user/resetLink').then(res => {
+        axios.get('/koa-movie-api/user/resetLink').then(res => {
             if (res.data.code === 200) {
                 this.setState({flag: true, name: res.data.data.userName})
             } else {

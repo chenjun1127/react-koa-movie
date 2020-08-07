@@ -83,7 +83,7 @@ export default class UserCenter extends React.Component {
     componentWillReceiveProps(nextProps, nextContext) {
         const currentId = parseInt(nextProps.match.params.id);
         const userId = parseInt(this.props.userInfo.info.id);
-        axios.get(`/api/main/getInfo?id=${currentId}&t=${Date.now()}`).then((res) => {
+        axios.get(`/koa-movie-api/main/getInfo?id=${currentId}&t=${Date.now()}`).then((res) => {
             res.data.code !== 200 &&
                 message.error(res.data.desc, 1, () => {
                     this.props.history.push('/operate');

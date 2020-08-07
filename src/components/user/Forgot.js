@@ -23,7 +23,7 @@ class NormalLoginForm extends React.Component {
         this.props.form.validateFields((err, values) => {
             if (!err) {
                 console.log('Received values of form: ', values);
-                axios.post('/api/user/getBackPassword', {
+                axios.post('/koa-movie-api/user/getBackPassword', {
                     name: values.userName,
                     email: values.email,
                     captcha: values.captcha,
@@ -52,7 +52,7 @@ class NormalLoginForm extends React.Component {
     }
 
     changeCaptcha() {
-        this.refs.captchaImg.src = `/api/captcha?t=${new Date().getTime()}`;
+        this.refs.captchaImg.src = `/koa-movie-api/captcha?t=${new Date().getTime()}`;
     }
 
     toEmail() {

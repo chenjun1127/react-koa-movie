@@ -32,7 +32,7 @@ class Operate {
         if (typeof params === 'number') {
             this.status = params;
         } else {
-            axios.get(`/api/collectByUser?movieId=${params.movieId}&userId=${params.userId}&t=${Date.now()}`).then((res) => {
+            axios.get(`/koa-movie-api/collectByUser?movieId=${params.movieId}&userId=${params.userId}&t=${Date.now()}`).then((res) => {
                 if (res.data.code === 200) {
                     this.status = res.data.data.status;
                 }
@@ -63,7 +63,7 @@ class GetInfo {
 
     @action
     getUserInfo = (userId) => {
-        axios.get(`/api/main/getInfo?id=${userId}&t=${Date.now()}`).then((res) => {
+        axios.get(`/koa-movie-api/main/getInfo?id=${userId}&t=${Date.now()}`).then((res) => {
             if (res.data.code === 200) {
                 this.info = res.data.data;
             }
@@ -71,7 +71,7 @@ class GetInfo {
     };
     @action
     getComments = (userId, pageNo = 1, pageSize = 10) => {
-        axios.get(`/api/main/comment?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
+        axios.get(`/koa-movie-api/main/comment?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
             if (res.data.code === 200) {
                 this.comments = [...res.data.data];
             }
@@ -79,7 +79,7 @@ class GetInfo {
     };
     @action
     getCollects = (userId, pageNo = 1, pageSize = 10) => {
-        axios.get(`/api/main/collect?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
+        axios.get(`/koa-movie-api/main/collect?userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
             if (res.data.code === 200) {
                 this.collects = [...res.data.data];
             }
@@ -87,7 +87,7 @@ class GetInfo {
     };
     @action
     getFollowStatus = (userId, followId) => {
-        axios.get(`/api/main/follow/status?userId=${userId}&followId=${followId}`).then((res) => {
+        axios.get(`/koa-movie-api/main/follow/status?userId=${userId}&followId=${followId}`).then((res) => {
             if (res.data.code === 200) {
                 this.followStatus = res.data.status;
             }
@@ -95,7 +95,7 @@ class GetInfo {
     };
     @action
     getfollowOperation = (userId, followId, type) => {
-        axios.post('/api/main/follow/operate', { userId, followId, type }).then((res) => {
+        axios.post('/koa-movie-api/main/follow/operate', { userId, followId, type }).then((res) => {
             if (res.data.code === 200) {
                 this.followOperation = res.data.data;
             }
@@ -103,7 +103,7 @@ class GetInfo {
     };
     @action
     getFollows = (id, userId, pageNo = 1, pageSize = 10) => {
-        axios.get(`/api/main/follow/list?id=${id}&userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
+        axios.get(`/koa-movie-api/main/follow/list?id=${id}&userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
             if (res.data.code === 200) {
                 this.follows = [...res.data.data];
             }
@@ -111,7 +111,7 @@ class GetInfo {
     };
     @action
     getFans = (id, userId, pageNo = 1, pageSize = 10) => {
-        axios.get(`/api/main/fans/list?id=${id}&userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
+        axios.get(`/koa-movie-api/main/fans/list?id=${id}&userId=${userId}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then((res) => {
             if (res.data.code === 200) {
                 this.fans = [...res.data.data];
             }

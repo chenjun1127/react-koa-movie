@@ -20,7 +20,7 @@ export default class MoviesComing extends React.Component {
 
     getMoviesComing() {
         const locObj = cookie.get('defaultCity') && JSON.parse(cookie.get('defaultCity'));
-        axios.get(`/api/movies/coming?locationId=${locObj.id}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/movies/coming?locationId=${locObj.id}&t=${Date.now()}`).then(res => {
             res.data.code === 200 && this.setState({ComingMoviesData: res.data.data});
         })
     }

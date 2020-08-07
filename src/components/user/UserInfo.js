@@ -34,7 +34,7 @@ class UserInfo extends React.Component {
                 // 添加私有的，看不到的，可以用formData.get('file')看有没有
                 // console.log(formData.get('name'));
                 const config = {headers: {'Content-Type': 'multipart/form-data'}};
-                axios.post('/api/user/updateInfo', formData, config).then(res => {
+                axios.post('/koa-movie-api/user/updateInfo', formData, config).then(res => {
                     if (res.data.code === 200) {
                         message.success(res.data.desc, 1, () => {
                             this.props.history.push(`/user/center/${cookie.get('userId')}`);
@@ -52,7 +52,7 @@ class UserInfo extends React.Component {
 
     componentDidMount() {
         const id = cookie.get('userId');
-        axios.get(`/api/user/getInfo?id=${id}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/user/getInfo?id=${id}&t=${Date.now()}`).then(res => {
             let resData = res.data.data;
             delete resData.password;
             this.props.userInfo.setInfo(Object.assign({}, resData, {

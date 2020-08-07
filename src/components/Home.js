@@ -38,7 +38,7 @@ export default class Home extends React.Component {
 
     getHotCity() {
         if (!sessionStorage.getItem('hotCities')) {
-            axios.get(`/api/cities?t=${Date.now()}`).then(res => {
+            axios.get(`/koa-movie-api/cities?t=${Date.now()}`).then(res => {
                 if (res.data.code === 200) {
                     sessionStorage.setItem('hotCities', JSON.stringify(res.data.data));
                     this.createCities(res.data.data)
@@ -95,13 +95,13 @@ export default class Home extends React.Component {
 
     getMovies(type, locId) {
         if (type === 1) {
-            axios.get(`/api/movies/hot?locationId=${locId}&t=${Date.now()}`).then(res => {
+            axios.get(`/koa-movie-api/movies/hot?locationId=${locId}&t=${Date.now()}`).then(res => {
                 if (res.data.code === 200) {
                     this.setState({moviesHotData: res.data.data})
                 }
             })
         } else {
-            axios.get(`/api/movies/coming?locationId=${locId}&t=${Date.now()}`).then(res => {
+            axios.get(`/koa-movie-api/movies/coming?locationId=${locId}&t=${Date.now()}`).then(res => {
                 if (res.data.code === 200) {
                     this.setState({moviesComingData: res.data.data})
                 }
@@ -110,7 +110,7 @@ export default class Home extends React.Component {
     }
 
     featureMovies() {
-        axios.get(`/api/movies/featureMovies?t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/movies/featureMovies?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 this.setState({featureMovies: res.data.data});
             }

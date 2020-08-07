@@ -43,7 +43,7 @@ export default class MoviesComment extends React.Component {
         this.setState({ submitting: true });
 
         setTimeout(() => {
-            axios.post('/api/comment', {
+            axios.post('/koa-movie-api/comment', {
                 content: this.state.value,
                 movieId: parseInt(this.props.match.params.id),
                 userId: parseInt(userId),
@@ -75,7 +75,7 @@ export default class MoviesComment extends React.Component {
     getAllComment() {
         const pageNo = 1;
         const pageSize = 10;
-        axios.get(`/api/comment/all?movieId=${parseInt(this.props.match.params.id)}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/comment/all?movieId=${parseInt(this.props.match.params.id)}&pageNo=${pageNo}&pageSize=${pageSize}&t=${Date.now()}`).then(res => {
             let supportArr = [];
             if (res.data.code === 200 && res.data.data.length > 0) {
                 this.setState({ comments: res.data.data });
@@ -103,7 +103,7 @@ export default class MoviesComment extends React.Component {
 
     getPraise(commentId) {
         const userId = cookie.get('userId');
-        axios.get(`/api/comment/praise?movieId=${parseInt(this.props.match.params.id)}&userId=${parseInt(userId)}&commentId=${commentId}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/comment/praise?movieId=${parseInt(this.props.match.params.id)}&userId=${parseInt(userId)}&commentId=${commentId}&t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 this.getAllComment();
             }

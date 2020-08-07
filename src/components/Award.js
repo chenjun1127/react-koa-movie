@@ -23,7 +23,7 @@ export default class Award extends React.Component {
     }
 
     getFeatureMovies(url, page) {
-        axios.get(`/api/movies/award?url=${url}&page=${page}&t=${Date.now()}`).then(res => {
+        axios.get(`/koa-movie-api/movies/award?url=${url}&page=${page}&t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
                 this.setState({data: res.data.data})
             }
