@@ -12,7 +12,10 @@ module.exports = {
         }, {
             test: /\.(scss|css)$/,
             use: [{
-                loader: MiniCssExtractPlugin.loader
+                loader: MiniCssExtractPlugin.loader,
+                options: {
+                    publicPath: '../'
+                }
             }, {
                 loader: 'css-loader',
                 options: {
@@ -35,7 +38,7 @@ module.exports = {
                     name: 'images/[hash:8].[name].[ext]'
                 }
             }]
-        },  {
+        }, {
             test: /\.svg$/,
             loader: 'svg-inline-loader'
         }]
