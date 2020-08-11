@@ -6,7 +6,7 @@ import {Button, Form, Input, message} from 'antd';
 import axios from "axios/index";
 import LogoTips from '../common/LogoTips';
 const FormItem = Form.Item;
-
+import { withRouter ,Redirect} from 'react-router-dom'
 export default class Forgot extends React.Component {
     render() {
         return (
@@ -54,12 +54,16 @@ class NormalLoginForm extends React.Component {
         })
     }
 
+    toHome = () =>{
+        this.props.history.replace('/');
+    }
+
     countDown(time) {
         this.timer = setInterval(() => {
             time--;
             if (time === 0) {
                 clearInterval(this.timer);
-                location.href = "/";
+                this.props.history.replace('/');
             }
             this.setState({time})
         }, 1000)
@@ -117,7 +121,7 @@ class NormalLoginForm extends React.Component {
                                         链接错误或者已经失效，<span className="red">{this.state.time}</span>秒后回到首页
                                     </p>
                                     <div>
-                                        <Button block href="/">回到首页</Button>
+                                        <Button block onClick={()=>this.toHome()}>回到首页</Button>
                                     </div>
                                 </div>
                         }
@@ -128,4 +132,4 @@ class NormalLoginForm extends React.Component {
     }
 }
 
-const WrappedNormalLoginForm = Form.create()(NormalLoginForm);
+const WrappedNormalLoginForm = Form.create()(withRouter(NormalLoginForm));

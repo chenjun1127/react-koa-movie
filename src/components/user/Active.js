@@ -39,6 +39,9 @@ class Active extends React.Component {
         }
     }
 
+    toHome = () =>{
+        this.props.history.replace('/');
+    }
 
     render() {
         const {email} = this.props.userInfo.info;
@@ -66,7 +69,7 @@ class Active extends React.Component {
                                     {
                                         this.state.isSend ? <Button type="primary" block className="forgot-button" onClick={this.toEmail.bind(this)} htmlType="button">前往邮箱</Button> : null
                                     }
-                                    <Button block href="/" >回到首页</Button>
+                                    <Button block onClick={()=>this.toHome()}>回到首页</Button>
                                 </div>
                             </div>
                         </div>

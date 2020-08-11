@@ -60,6 +60,10 @@ class NormalLoginForm extends React.Component {
         window.location.href = 'https://' + goToEmail(text);
     }
 
+    toHome = () =>{
+        this.props.history.push('/');
+    }
+
     render() {
         const {getFieldDecorator} = this.props.form;
         const formItemLayout = {
@@ -132,7 +136,7 @@ class NormalLoginForm extends React.Component {
                                     </p>
                                     <div>
                                         <Button type="primary" block className="forgot-button" onClick={this.toEmail.bind(this)}>前往邮箱</Button>
-                                        <Button block href="/">回到首页</Button>
+                                        <Button block onClick={this.toHome()}>回到首页</Button>
                                     </div>
                                 </div>
                         }
