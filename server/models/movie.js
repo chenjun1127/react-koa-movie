@@ -22,7 +22,7 @@ module.exports = function(sequelize, DataTypes) {
             allowNull: false
         },
         movieSummary: {
-            type: DataTypes.STRING,
+            type: DataTypes.TEXT,
             field: "movie_summary",
             allowNull: false
         },
