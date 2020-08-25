@@ -28,7 +28,7 @@ class NormalLoginForm extends React.Component {
                 }).then(res => {
                     if (res.data.code === 200) {
                         message.success(res.data.desc, 1, () => {
-                            location.href = "/";
+                            this.props.history.replace('/');
                         })
                     } else {
                         message.error(res.data.desc, 1)
