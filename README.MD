@@ -1,6 +1,6 @@
 ## react-koa-movie
 
-react+mobx+koa+sequelize(mysql)+ant-design 开发的网站，前端采用react全家桶，后端使用koa服务，数据库框架为sequelize-mysql！
+基于react+mobx+koa+sequelize(mysql)+ant-design 开发的电影网站，前后端分离开发，前端采用 react 全家桶 + ant-design，后端使用 koa 服务，数据库框架为 sequelize-mysql！
 
 在线预览[点击这里](http://119.29.165.98/react-movie/#/)
 
