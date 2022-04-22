@@ -1,27 +1,28 @@
 import React from 'react';
-import {inject, observer} from 'mobx-react';
+import { inject, observer } from 'mobx-react';
 import Nav from './common/Nav';
 import axios from "axios";
-import {Popover, Tabs} from "antd";
-import {compare, matchesSelector} from '../utils/tools';
-import {cookie} from '../utils/cookie';
+import { Popover, Tabs } from "antd";
+import { compare, matchesSelector } from '../utils/tools';
+import { cookie } from '../utils/cookie';
 import HotMovies from './movies/HotMovies';
 import ComingMovies from "./movies/ComingMovies";
 import FeatureMovies from "./movies/FeatureMovies";
 import Footer from "./common/Footer";
 import Loading from "./common/Loading";
 
+
 const letters = "ABCDEFGHJKLMNPQRSTWXYZ".split('');
 @inject(["userInfo"], ["cityLoc"])
 @observer
 export default class Home extends React.Component {
-    state = {hotCities: [], loc: {id: 366, n: '深圳'}, visible: false, tabCurrentIndex: 1}
+    state = { hotCities: [], loc: { id: 366, n: '深圳' }, visible: false, tabCurrentIndex: 1 }
 
     componentDidMount() {
         this.getHotCity();
         this._onBlurHandler();
         const locObj = cookie.get('defaultCity') ? JSON.parse(cookie.get('defaultCity')) : this.state.loc;
-        cookie.set('defaultCity', JSON.stringify({id: locObj.id, n: locObj.n}), 10);
+        cookie.set('defaultCity', JSON.stringify({ id: locObj.id, n: locObj.n }), 10);
         this.getMovies(1, locObj.id);
         this.featureMovies();
     }
@@ -32,32 +33,36 @@ export default class Home extends React.Component {
             if (matchesSelector(e.target, '.ant-popover *')) {
                 return;
             }
-            this.setState({visible: false})
+            this.setState({ visible: false })
         }, false);
     }
 
     getHotCity() {
-        if (!sessionStorage.getItem('hotCities')) {
+        if (!sessionStorage.getItem('hotCities') || sessionStorage.getItem('hotCities') == "undefined") {
             axios.get(`/koa-movie-api/cities?t=${Date.now()}`).then(res => {
+                console.log(`res:${res}`);
                 if (res.data.code === 200) {
                     sessionStorage.setItem('hotCities', JSON.stringify(res.data.data));
                     this.createCities(res.data.data)
                 }
             })
         } else {
+
             var hotCities = sessionStorage.getItem('hotCities');
+            console.log(`hotCities${hotCities}`);
             this.createCities(JSON.parse(hotCities));
         }
     }
 
     createCities(list) {
-        var _list = list.slice().splice(0, 50);
-        list.sort(compare('n', 'pinyinFull')); //城市按首字母排序
-        var newArr = [];
-        for (let i = 0; i < letters.length; i++) {
-            newArr.push(cc(list, letters[i]));
+        if (list && list.length > 0) {
+            var _list = list.slice().splice(0, 50);
+            list.sort(compare('n', 'pinyinFull')); //城市按首字母排序
+            var newArr = [];
+            for (let i = 0; i < letters.length; i++) {
+                newArr.push(cc(list, letters[i]));
+            }
         }
-
         function cc(list, text) {
             let arr = [], map = new Map();
             for (let i = 0; i < list.length; i++) {
@@ -76,20 +81,20 @@ export default class Home extends React.Component {
     }
 
     openPopover() {
-        this.setState({visible: true})
+        this.setState({ visible: true })
     }
 
     tabClick(key) {
-        this.setState({tabCurrentIndex: Number(key)});
+        this.setState({ tabCurrentIndex: Number(key) });
         const locObj = cookie.get('defaultCity') ? JSON.parse(cookie.get('defaultCity')) : this.state.loc;
         this.getMovies(Number(key), locObj.id);
     }
 
     handleClick(e) {
         const locId = e.locationId ? e.locationId : e.id;
-        this.setState({loc: {id: locId, n: e.n}, visible: false});
-        this.props.cityLoc.setLoc({id: locId, n: e.n});
-        cookie.set('defaultCity', JSON.stringify({id: locId, n: e.n}), 10);
+        this.setState({ loc: { id: locId, n: e.n }, visible: false });
+        this.props.cityLoc.setLoc({ id: locId, n: e.n });
+        cookie.set('defaultCity', JSON.stringify({ id: locId, n: e.n }), 10);
         this.getMovies(this.state.tabCurrentIndex, locId);
     }
 
@@ -97,13 +102,13 @@ export default class Home extends React.Component {
         if (type === 1) {
             axios.get(`/koa-movie-api/movies/hot?locationId=${locId}&t=${Date.now()}`).then(res => {
                 if (res.data.code === 200) {
-                    this.setState({moviesHotData: res.data.data})
+                    this.setState({ moviesHotData: res.data.data })
                 }
             })
         } else {
             axios.get(`/koa-movie-api/movies/coming?locationId=${locId}&t=${Date.now()}`).then(res => {
                 if (res.data.code === 200) {
-                    this.setState({moviesComingData: res.data.data})
+                    this.setState({ moviesComingData: res.data.data })
                 }
             })
         }
@@ -112,7 +117,7 @@ export default class Home extends React.Component {
     featureMovies() {
         axios.get(`/koa-movie-api/movies/featureMovies?t=${Date.now()}`).then(res => {
             if (res.data.code === 200) {
-                this.setState({featureMovies: res.data.data});
+                this.setState({ featureMovies: res.data.data });
             }
         })
     }
@@ -124,17 +129,17 @@ export default class Home extends React.Component {
     }
 
     render() {
-        const {hotCityList, allCityList, loc, visible, featureMovies} = this.state;
+        const { hotCityList, allCityList, loc, visible, featureMovies } = this.state;
         const defaultCity = cookie.get('defaultCity') ? JSON.parse(cookie.get('defaultCity')) : null;
-        if (!hotCityList || !allCityList || !featureMovies) return <Loading/>;
+        if (!hotCityList || !allCityList || !featureMovies) return <Loading loadingText="数据加载失败" />;
         return (
             <div className="container">
-                <Nav history={this.props.history}/>
+                <Nav history={this.props.history} />
                 <div className="inner">
                     <div className="mainInner">
                         <div className="locBox">
-                            <Popover visible={visible} content={<RenderContent handleClick={this.handleClick.bind(this)} {...this.props} {...this.state}/>}
-                                     trigger={['click']} placement="topLeft">
+                            <Popover visible={visible} content={<RenderContent handleClick={this.handleClick.bind(this)} {...this.props} {...this.state} />}
+                                trigger={['click']} placement="topLeft">
                                 <div className="loc" onClick={this.openPopover.bind(this)}>
                                     <svg className="icon" aria-hidden="true">
                                         <use xlinkHref="#icon-weizhi"></use>
@@ -144,19 +149,19 @@ export default class Home extends React.Component {
                             </Popover>
                         </div>
                         <Tabs defaultActiveKey="1" size="large" onTabClick={this.tabClick.bind(this)}
-                              tabBarStyle={{margin: 0, display: 'flex', justifyContent: 'center', fontSize: '18px'}}>
+                            tabBarStyle={{ margin: 0, display: 'flex', justifyContent: 'center', fontSize: '18px' }}>
                             <Tabs.TabPane tab="正在热映" key="1">
-                                <HotMovies {...this.props} {...this.state}/>
+                                <HotMovies {...this.props} {...this.state} />
                             </Tabs.TabPane>
                             <Tabs.TabPane tab="即将上映" key="2">
-                                <ComingMovies {...this.props} {...this.state}/>
+                                <ComingMovies {...this.props} {...this.state} />
                             </Tabs.TabPane>
                         </Tabs>
                         <div className="title">特色榜单</div>
-                        <FeatureMovies {...this.state} {...this.props}/>
+                        <FeatureMovies {...this.state} {...this.props} />
                     </div>
                 </div>
-                <Footer/>
+                <Footer />
             </div>
         );
     }
@@ -164,7 +169,7 @@ export default class Home extends React.Component {
 
 class RenderContent extends React.Component {
     renderTabs() {
-        const {hotCityList} = this.props;
+        const { hotCityList } = this.props;
         const tabsTitle = ["热门", "A-D", "E-H", "J-M", "N-R", "S-X", "Y-Z"];
         const n = Math.floor(letters.length / 5);
         return tabsTitle.map((title, index) => {
@@ -193,7 +198,7 @@ class RenderContent extends React.Component {
     }
 
     renderTabContent(fromIndex, toIndex) {
-        const {allCityList} = this.props;
+        const { allCityList } = this.props;
         var domEle = [];
         for (let i = fromIndex; i < allCityList.length; i++) {
             if (i <= toIndex) {
